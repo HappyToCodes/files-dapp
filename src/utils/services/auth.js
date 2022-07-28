@@ -1,7 +1,7 @@
 import History from "./GlobalNavigation/navigationHistory";
 import { web3auth } from "./web3auth";
 
-export function login(address, signedMessage, accessToken) {
+export function login(address, signedMessage, accessToken, provider) {
   let expirationDate = new Date();
   expirationDate = expirationDate.setDate(expirationDate.getDate() + 7);
   localStorage.setItem(
@@ -11,6 +11,7 @@ export function login(address, signedMessage, accessToken) {
       expirationDate: expirationDate,
       signedMessage: signedMessage,
       accessToken: accessToken,
+      provider: provider,
     })
   );
   History.navigate("/dashboard");
@@ -27,6 +28,7 @@ export function isLogin() {
     let expirationDate = new Date(authData?.["expirationDate"]);
     return expirationDate.getTime() > currentDate.getTime() ? true : false;
   } else {
+    logout();
     return false;
   }
 }
@@ -58,6 +60,14 @@ export function getAccessToken() {
   let message = null;
   if (isLogin()) {
     message = JSON.parse(localStorage.getItem("authData"))["accessToken"];
+  }
+  return message;
+}
+
+export function getProvider() {
+  let message = null;
+  if (isLogin()) {
+    message = JSON.parse(localStorage.getItem("authData"))["provider"];
   }
   return message;
 }

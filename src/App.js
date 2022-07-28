@@ -25,6 +25,7 @@ function App() {
   const dispatch = useDispatch();
   const _otherData = bindActionCreators(otherDataAC, dispatch);
   useEffect(() => {
+    console.log("----- APP.JS");
     initWeb3Auth();
     let isMobile = window.matchMedia(
       "only screen and (max-width: 600px)"

@@ -17,6 +17,7 @@ export const initWeb3Auth = async () => {
     web3auth = new Web3AuthCore({
       chainConfig: getWeb3AuthChainConfig(currentWeb3AuthChain),
     });
+    console.log(web3auth, "init web3auth");
 
     const openloginAdapter = new OpenloginAdapter({
       adapterSettings: {
@@ -73,6 +74,7 @@ export const changeWeb3AuthChain = (chainName) => {
 };
 
 export const getWeb3AuthProvider = async () => {
+  console.log(web3authProvider);
   if (web3authProvider) {
   } else {
     web3authProvider = await web3auth.connect();

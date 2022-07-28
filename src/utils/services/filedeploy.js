@@ -14,6 +14,7 @@ import {
 
 export const sign_message = async () => {
   const web3provider = await getWeb3AuthProvider();
+  console.log(web3provider, "inside Sign Message");
   const provider = new ethers.providers.Web3Provider(web3provider);
   const signer = provider.getSigner();
   const address = await signer.getAddress();
@@ -84,14 +85,13 @@ export const uploadFile = async (
   }
 };
 
-const uploadEncryptedFile = async (
+export const uploadEncryptedFile = async (
   uploadedFile,
   setUploadProgress,
   _authDetails
 ) => {
   uploadedFile.persist();
   setUploadProgress(10);
-
   let network = currentWeb3AuthChain;
   if (network) {
     try {
@@ -99,6 +99,7 @@ const uploadEncryptedFile = async (
       let balance = await getBalance();
       if (+balance?.dataUsed < +balance?.dataLimit) {
         const signingResponse = await sign_message();
+        console.log(signingResponse, "SIGNING RESPONSE");
         const accessToken = (
           await axios.post(
             `https://api.lighthouse.storage/api/auth/verify_signer`,
@@ -118,7 +119,7 @@ const uploadEncryptedFile = async (
         notify(`File Upload Success:  ${deploy_response?.Hash}`, "success");
       } else {
         setUploadProgress(0);
-        notify(`Free Data Usage Exeeded `, "error");
+        notify(`Data Usage Exeeded `, "error");
       }
     } catch (e) {
       notify(`ERROR:${e}`, "error");
