@@ -5,13 +5,13 @@ import { MdOutlineVisibilityOff, MdOutlineVisibility, MdFileDownload, MdOutlineC
 import { notify } from "../../../utils/services/notification";
 import ReactLoading from "react-loading";
 import axios from "axios";
-import { getAddress, getSignMessage } from "../../../utils/services/auth";
+import { getAddress, getProvider, getSignMessage } from "../../../utils/services/auth";
 import { baseUrl } from "../../../utils/config/urls";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { otherDataAC } from "../../../store/action-creators";
-import { getWeb3AuthProvider, web3auth } from '../../../utils/services/web3auth'
 import { ethers } from "ethers";
+import { web3auth } from "../../../utils/services/web3auth";
 
 function Apikey() {
 
@@ -34,8 +34,7 @@ function Apikey() {
 
     const getData = async () => {
         setResponseReceived(false);
-        const web3provider = await getWeb3AuthProvider();
-        const provider = new ethers.providers.Web3Provider(web3provider);
+        const provider = new ethers.providers.Web3Provider(web3auth.provider);
         const signer = provider.getSigner();
         const res = await axios.get(`${baseUrl}/api/auth/get_message?publicKey=${getAddress()}`);
         const message = res.data;

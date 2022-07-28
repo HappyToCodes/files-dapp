@@ -4,23 +4,18 @@ import { ethers } from "ethers";
 import axios from "axios";
 import { getChainNetwork } from "./chainNetwork";
 import { notify } from "./notification";
-import { getAccessToken, getAddress, getSignMessage } from "./auth";
+import { getAccessToken, getAddress } from "./auth";
 import { baseUrl } from "../config/urls";
-import {
-  currentWeb3AuthChain,
-  getWeb3AuthProvider,
-  web3auth,
-} from "./web3auth";
+import { currentWeb3AuthChain, web3auth } from "./web3auth";
 
 export const sign_message = async () => {
-  const web3provider = await getWeb3AuthProvider();
-  console.log(web3provider, "inside Sign Message");
-  const provider = new ethers.providers.Web3Provider(web3provider);
+  const provider = new ethers.providers.Web3Provider(web3auth.provider);
   const signer = provider.getSigner();
   const address = await signer.getAddress();
   const res = await axios.get(
     `${baseUrl}/api/auth/get_message?publicKey=${address}`
   );
+
   const message = res.data;
   const signed_message = await signer.signMessage(message);
   return {
@@ -104,17 +99,21 @@ export const uploadEncryptedFile = async (
           await axios.post(
             `https://api.lighthouse.storage/api/auth/verify_signer`,
             {
-              publicKey: signingResponse.address,
-              signedMessage: signingResponse.signedMessage,
+              publicKey: signingResponse?.address,
+              signedMessage: signingResponse?.signed_message,
             }
           )
         ).data.accessToken;
+
+        console.log(accessToken, "ACCESS TOKEN");
 
         const deploy_response = await lighthouse.uploadEncrypted(
           uploadedFile,
           signingResponse.address,
           accessToken
         );
+
+        console.log(deploy_response, "DEPLOY RESPONSE");
         setUploadProgress(0);
         notify(`File Upload Success:  ${deploy_response?.Hash}`, "success");
       } else {

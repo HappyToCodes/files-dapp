@@ -11,7 +11,6 @@ export function login(address, signedMessage, accessToken, provider) {
       expirationDate: expirationDate,
       signedMessage: signedMessage,
       accessToken: accessToken,
-      provider: provider,
     })
   );
   History.navigate("/dashboard");
@@ -64,10 +63,4 @@ export function getAccessToken() {
   return message;
 }
 
-export function getProvider() {
-  let message = null;
-  if (isLogin()) {
-    message = JSON.parse(localStorage.getItem("authData"))["provider"];
-  }
-  return message;
-}
+
