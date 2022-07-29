@@ -50,7 +50,8 @@ function LoginDialog({ setLoginDialog }) {
             "signedMessage": obj.signed_message
         });
         _auth.setAuthData(obj);
-        login(obj.address, obj.signed_message, authToken?.['data']?.['accessToken']);
+        console.log('web3auth Provider', web3authProvider);
+        login(obj.address, obj.signed_message, authToken?.['data']?.['accessToken'], provider);
     }
 
 

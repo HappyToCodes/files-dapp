@@ -9,7 +9,7 @@ import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 
 let clientId = process.env.REACT_APP_WEB3AUTH_APP_ID;
 export var web3auth = undefined;
-export var web3authProvider = undefined;
+
 export var currentWeb3AuthChain = "ethereum";
 
 export const initWeb3Auth = async () => {
@@ -17,6 +17,7 @@ export const initWeb3Auth = async () => {
     web3auth = new Web3AuthCore({
       chainConfig: getWeb3AuthChainConfig(currentWeb3AuthChain),
     });
+    console.log(web3auth, "init web3auth");
 
     const openloginAdapter = new OpenloginAdapter({
       adapterSettings: {
@@ -72,22 +73,13 @@ export const changeWeb3AuthChain = (chainName) => {
   initWeb3Auth();
 };
 
-export const getWeb3AuthProvider = async () => {
-  if (web3authProvider) {
-  } else {
-    web3authProvider = await web3auth.connect();
-    console.log(web3authProvider, "Web3auth Provider");
-  }
-  return web3authProvider;
-};
-
 export const web3AuthLogin = async (adapter, loginProvider, login_hint) => {
   try {
     if (!web3auth) {
       console.log("web3auth not initialized yet");
       return;
     }
-    web3authProvider = await web3auth.connectTo(adapter, {
+    let web3authProvider = await web3auth.connectTo(adapter, {
       loginProvider,
       login_hint,
     });
@@ -104,7 +96,10 @@ export const Web3AuthLoginWithWallet = async () => {
       console.log("web3auth not initialized yet");
       return;
     }
-    web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.METAMASK, {});
+   let web3authProvider = await web3auth.connectTo(
+     WALLET_ADAPTERS.METAMASK,
+     {}
+   );
     return web3authProvider;
   } catch (error) {
     console.log("error", error);

@@ -14,6 +14,9 @@ import FileShareDialog from '../fileShareDialog/FileShareDialog';
 import moment from 'moment';
 import { notify } from '../../utils/services/notification';
 import History from '../../utils/services/GlobalNavigation/navigationHistory';
+import Skeleton from 'react-loading-skeleton'
+
+
 
 
 
@@ -64,7 +67,14 @@ function Infobar({ infoBarData, setInfoBarData }) {
                             {infoBarData?.cid}
                         </span>
                     </p>
-
+                </div>
+                <div className="row">
+                    <p>Storage Providers
+                        <br />
+                        <span className="content">
+                            {infoBarData?.provider || <Skeleton />}
+                        </span>
+                    </p>
                 </div>
 
                 <hr />
