@@ -11,77 +11,84 @@ import { useState } from "react";
 import { MdErrorOutline } from "react-icons/md";
 import axios from "axios";
 import { baseUrl } from "../../utils/config/urls";
+import { decryptEncryptedFile } from "../../utils/services/filedeploy";
 
 
 function FilePreview() {
     const { id } = useParams();
     const { state } = useLocation();
-    const [fileInfo, setFileInfo] = useState(undefined);
     const [fileType, setFileType] = useState(undefined);
-    const [isEncrypted, setIsEncrypted] = useState(false);
+    const [fileInfo, setFileInfo] = useState(undefined);
+    const [fileURL, setFileURL] = useState(undefined);
     const [isUnSupportedType, setIsUnSupportedType] = useState(false);
 
     useEffect(() => {
-        console.log(id, state);
-        state?.fileName ? setFileInfo(state) : History.navigate('/dashboard');
-        state?.encryption === 'true' && setIsEncrypted(true);
-
         (async () => {
-            await getInfo();
+            let info = await getInfo();
+            info?.cid ? setFileInfo(info) : History.navigate('/dashboard');
+            info?.encryption === 'true' ? setFileURL(await getDecryptedFileURL(info?.cid)) : setFileURL(`https://gateway.lighthouse.storage/ipfs/${id}`)
+            setFileType(info?.fileName.split('.').pop());
         })()
-
-        setFileType(state?.fileName.split('.').pop());
     }, []);
 
+    const getDecryptedFileURL = async (cid) => {
+        let blob = await decryptEncryptedFile(cid)
+        console.log(blob);
+
+        return `https://gateway.lighthouse.storage/ipfs/${cid}`
+    }
+
+
     const getInfo = async () => {
-        const info = axios.get(`${baseUrl}/api/lighthouse/file_info?cid=${id}`)
-        console.log(info);
+        const info = await axios.get(`${baseUrl}/api/lighthouse/file_info?cid=${id}`)
+        return info['data'];
     }
 
 
     return (
         <div className="filePreviewContainer">
-            <div className="header">
-                <div className="logoContainer">
-                    <span className="ptr" onClick={() => { History.navigate('/dashboard') }}>
-                        <IoArrowBackOutline />
-                    </span>
-                    &nbsp; |
-                    <img src="/logo.png" alt="" />
-                    <p>Lighthouse</p>
-                </div>
-                <div className="iconsContainer">
-                    {fileInfo?.fileName} &nbsp; | &nbsp;{" "}
-                    <span
-                        className="ptr"
-                        onClick={() => {
-                            downloadFileFromURL(`https://gateway.lighthouse.storage/ipfs/${id}`, fileInfo?.fileName);
-                        }}
-                    >
-                        <BiDownload />
-                    </span>
-                </div>
-            </div>
-            <div className="body">
-                {
-                    isUnSupportedType ? <div className="unsupportedContainer">
-                        <MdErrorOutline />
-                        <p>File Type Not Supported
-                            <br />
-                            <span>Download File</span>
-                        </p>
-                    </div> : <FileViewer
-                        fileType={fileType}
-                        filePath={
-                            `https://gateway.lighthouse.storage/ipfs/${id}`
+            {
+                fileURL && <>
+                    <div className="header">
+                        <div className="logoContainer">
+                            <span className="ptr" onClick={() => { History.navigate('/dashboard') }}>
+                                <IoArrowBackOutline />
+                            </span>
+                            &nbsp; |
+                            <img src="/logo.png" alt="" />
+                            <p>Lighthouse</p>
+                        </div>
+                        <div className="iconsContainer">
+                            {fileInfo?.fileName} &nbsp; | &nbsp;{" "}
+                            <span
+                                className="ptr"
+                                onClick={() => {
+                                    downloadFileFromURL(fileURL, fileInfo?.fileName);
+                                }}
+                            >
+                                <BiDownload />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="body">
+                        {
+                            isUnSupportedType ? <div className="unsupportedContainer">
+                                <MdErrorOutline />
+                                <p>File Type Not Supported
+                                    <br />
+                                    <span>Download File</span>
+                                </p>
+                            </div> : <FileViewer
+                                fileType={fileType}
+                                filePath={fileURL}
+                                onError={() => { }}
+                            />
                         }
-                        onError={() => {
-                            console.log("--");
-                        }}
-                    />
-                }
 
-            </div>
+                    </div>
+                </>
+            }
+
         </div>
     );
 }

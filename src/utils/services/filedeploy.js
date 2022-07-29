@@ -26,7 +26,7 @@ export const sign_message = async () => {
 const sign_auth_message = async () => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
-  const publicKey = (await signer.getAddress()).toLowerCase();
+  const publicKey = await signer.getAddress();
   const messageRequested = await lighthouse.getAuthMessage(publicKey);
   const signed_message = await signer.signMessage(messageRequested);
   return signed_message;
@@ -122,12 +122,14 @@ export const uploadEncryptedFile = async (
 
 export const decryptEncryptedFile = async (cid) => {
   const signed_message = await sign_auth_message();
+  console.log(signed_message);
   const publicKey = getAddress();
   const key = await lighthouse.fetchEncryptionKey(
     cid,
     publicKey,
     signed_message
   );
+  console.log(key);
   const decrypted = await lighthouse.decryptFile(cid, key);
   return decrypted;
 };
