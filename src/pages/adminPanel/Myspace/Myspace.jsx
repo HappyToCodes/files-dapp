@@ -44,9 +44,10 @@ function Myspace() {
         axios.get(`${baseUrl}/api/user/get_uploads?publicKey=${getAddress()}`).then(
             (response) => {
                 if (response["status"] === 200) {
-                    _fileAC.setFileData(response["data"]);
-                    setCurrentItems(response["data"]);
-                    setOrignalItems(response["data"]);
+
+                    _fileAC.setFileData(response["data"]['Items']);
+                    setCurrentItems(response["data"]['Items']);
+                    setOrignalItems(response["data"]['Items']);
                     setResponseReceived(true);
                     setTableItemsLength();
                 }
