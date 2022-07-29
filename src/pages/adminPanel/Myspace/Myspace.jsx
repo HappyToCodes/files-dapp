@@ -45,9 +45,9 @@ function Myspace() {
             (response) => {
                 if (response["status"] === 200) {
 
-                    _fileAC.setFileData(response["data"]['Items']);
-                    setCurrentItems(response["data"]['Items']);
-                    setOrignalItems(response["data"]['Items']);
+                    _fileAC.setFileData(response["data"]);
+                    setCurrentItems(response["data"]);
+                    setOrignalItems(response["data"]);
                     setResponseReceived(true);
                     setTableItemsLength();
                 }

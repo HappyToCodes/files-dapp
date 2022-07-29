@@ -100,27 +100,11 @@ export const uploadEncryptedFile = async (
       setUploadProgress(20);
       let balance = await getBalance();
       if (+balance?.dataUsed < +balance?.dataLimit) {
-        const signingResponse = await sign_message();
-        console.log(signingResponse, "SIGNING RESPONSE");
-        const accessToken = (
-          await axios.post(
-            `https://api.lighthouse.storage/api/auth/verify_signer`,
-            {
-              publicKey: signingResponse?.address,
-              signedMessage: signingResponse?.signed_message,
-            }
-          )
-        ).data.accessToken;
-
-        console.log(accessToken, "ACCESS TOKEN");
-
         const deploy_response = await lighthouse.uploadEncrypted(
           uploadedFile,
-          signingResponse.address,
-          accessToken
+          getAddress(),
+          getAccessToken()
         );
-
-        console.log(deploy_response, "DEPLOY RESPONSE");
         setUploadProgress(0);
         notify(`File Upload Success:  ${deploy_response?.Hash}`, "success");
       } else {
