@@ -100,7 +100,7 @@ function Myspace() {
                                         }}
                                     >
                                         <td>
-                                            {getFileIcon(item?.fileName)}&nbsp;{item?.fileName}
+                                            {getFileIcon(item?.fileName, item?.encryption === 'true' ? true : false)}&nbsp;{item?.fileName}
                                         </td>
 
                                         {isMobile ? (

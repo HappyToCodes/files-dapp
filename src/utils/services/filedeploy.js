@@ -15,7 +15,6 @@ export const sign_message = async () => {
   const res = await axios.get(
     `${baseUrl}/api/auth/get_message?publicKey=${address}`
   );
-
   const message = res.data;
   const signed_message = await signer.signMessage(message);
   return {
@@ -23,6 +22,14 @@ export const sign_message = async () => {
     signed_message: signed_message,
     address: address,
   };
+};
+const sign_auth_message = async () => {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const publicKey = (await signer.getAddress()).toLowerCase();
+  const messageRequested = await lighthouse.getAuthMessage(publicKey);
+  const signed_message = await signer.signMessage(messageRequested);
+  return signed_message;
 };
 
 export const execute_transaction = async (
@@ -127,6 +134,18 @@ export const uploadEncryptedFile = async (
   } else {
     notify(`Please connect to a supported network`, "error");
   }
+};
+
+export const decryptEncryptedFile = async (cid) => {
+  const signed_message = await sign_auth_message();
+  const publicKey = getAddress();
+  const key = await lighthouse.fetchEncryptionKey(
+    cid,
+    publicKey,
+    signed_message
+  );
+  const decrypted = await lighthouse.decryptFile(cid, key);
+  return decrypted;
 };
 
 export const uploadFolder = async (
