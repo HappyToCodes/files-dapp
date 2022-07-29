@@ -7,17 +7,11 @@ import {
 import { usdtABI } from "../contract_abi/usdcABi";
 import { erc20ABI } from "../contract_abi/erc20Abi";
 import { notify } from "./notification";
-import {
-  changeWeb3AuthChain,
-  currentWeb3AuthChain,
-  getWeb3AuthProvider,
-} from "./web3auth";
+import { currentWeb3AuthChain, web3auth } from "./web3auth";
 
 export async function SendTransaction() {
   const send_abi = usdtABI;
-  const web3provider = await getWeb3AuthProvider();
-  const provider = new ethers.providers.Web3Provider(web3provider);
-
+  const provider = new ethers.providers.Web3Provider(web3auth.provider);
   const signer = provider.getSigner();
   let chainInfo = await getContractInfo();
   const contract = new ethers.Contract(
@@ -56,9 +50,8 @@ export const getCoinBalance = async (coinAddress) => {
   let balance = 0;
   if (currentChain === "ethereum") {
     const ERC20ABI = erc20ABI;
-    const web3provider = await getWeb3AuthProvider();
     const tokenContractAddress = "0x6b175474e89094c44da98b954eedeac495271d0f";
-    const provider = new ethers.providers.Web3Provider(web3provider);
+    const provider = new ethers.providers.Web3Provider(web3auth.provider);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(
       tokenContractAddress,

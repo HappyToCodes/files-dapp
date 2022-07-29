@@ -13,12 +13,16 @@ import Dialog from "@material-ui/core/Dialog";
 import FileShareDialog from '../fileShareDialog/FileShareDialog';
 import moment from 'moment';
 import { notify } from '../../utils/services/notification';
+import History from '../../utils/services/GlobalNavigation/navigationHistory';
+import Skeleton from 'react-loading-skeleton'
 
 
 
-function openNewTab(cid) {
-    window.open(
-        `https://ipfs.io/ipfs/${cid}`, "_blank");
+
+
+function viewFile(data) {
+    History.navigate(`viewFile/${data?.cid}`, { state: data })
+
 }
 const copyToClipboard = (text) => {
     navigator.clipboard.writeText(`https://ipfs.io/ipfs/${text}`);
@@ -63,13 +67,20 @@ function Infobar({ infoBarData, setInfoBarData }) {
                             {infoBarData?.cid}
                         </span>
                     </p>
-
+                </div>
+                <div className="row">
+                    <p>Storage Providers
+                        <br />
+                        <span className="content">
+                            {infoBarData?.provider || <Skeleton />}
+                        </span>
+                    </p>
                 </div>
 
                 <hr />
 
                 <div className="iconsContainer">
-                    <MdOutlineVisibility onClick={() => openNewTab(infoBarData?.cid)} />
+                    <MdOutlineVisibility onClick={() => viewFile(infoBarData)} />
                     <BiLink onClick={() => {
                         copyToClipboard(infoBarData?.cid)
                     }} />
