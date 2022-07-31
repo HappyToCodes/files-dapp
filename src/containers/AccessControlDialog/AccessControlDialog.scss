@@ -1,0 +1,22 @@
+@use 'src/styles/variables' as variable;
+
+
+.AccessControlDialog{
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .AccessForm{
+        width: 100%;
+        margin: 0;
+    }
+  }
+
+
+
+
+  @media screen and (max-width: variable.$mobile-break-point) {
+    .AccessControlDialog{
+      margin: 20px;  
+    }
+  }
