@@ -61,12 +61,14 @@ function FilePreview() {
                         </div>
                         <div className="iconsContainer">
                             {fileInfo?.fileName} &nbsp; | &nbsp;{" "}
+
+                           
                             <span
-                                className="ptr"
+                                className="ptr fillBtn__blue"
                                 onClick={() => {
                                     downloadFileFromURL(fileURL, fileInfo?.fileName);
                                 }}
-                            >
+                            > Download &nbsp;
                                 <BiDownload />
                             </span>
                         </div>

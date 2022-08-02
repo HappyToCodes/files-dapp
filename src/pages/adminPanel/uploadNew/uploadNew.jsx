@@ -73,10 +73,10 @@ function UploadNew() {
             <div className="uploadNew__top">
                 <div className="uploadNew__title">
                     <p>Upload New</p>
-                    {/* <ToggleButton
+                    <ToggleButton
                       setIsEncrypted={setIsEncrypted}
                       isEncrypted={isEncrypted}
-                    /> */}
+                    />
               </div>
               {isDisclaimer && (
                   <DisclaimerBar

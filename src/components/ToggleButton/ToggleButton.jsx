@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import './ToggleButton.scss'
 
 function ToggleButton({ setIsEncrypted, isEncrypted }) {
 
     return (
         <div className="ToggleButton">
-            <p className='title' dangerouslySetInnerHTML={{ __html: isEncrypted ? 'Encryption <br/> Mode' : 'Public <br/> Mode' }}></p>
+            <p className='title' dangerouslySetInnerHTML={{ __html: isEncrypted ? 'Encryption <br/> ON' : 'Encryption <br/> OFF' }}></p>
             <label className="toggle" for="uniqueID">
                 <input type="checkbox" className="toggle__input" id='uniqueID' onClick={(e) => { setIsEncrypted(e.target.checked) }} />
                 <span className="toggle-track">
