@@ -1,5 +1,5 @@
 import { Dialog } from '@material-ui/core';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom';
 import AccessControlDialog from '../../../containers/AccessControlDialog/AccessControlDialog';
 import './AccessControl.scss';
@@ -12,21 +12,71 @@ import './AccessControl.scss';
 
 function AccessControl() {
     const { cid } = useParams();
+    let allConditions = [];
     const [isAccessControlDialog, setAccessControlDialog] = useState(false);
-    const [accessConditions, setAccessConditions] = useState([]);
+    const [currentCondition, setCurrentCondition] = useState(null);
+    const [inputTerm, setInputTerm] = useState('')
+
     // const { state } = useLocation();
 
-    console.log(cid, 'CID Access Control')
+    useEffect(() => {
+        console.log(currentCondition);
+        let condition = { ...currentCondition }
+        console.log(condition);
+        if (condition['id']) {
+
+        } else {
+            condition['id'] = allConditions.length;
+            allConditions.push(condition);
+        }
+
+
+
+    }, [currentCondition])
+
+
+
     return (
         <div div className="AccessControl" >
-            <div className="uploadNew__title">
+            <div className="AccessControl__title">
                 <p>Access Control</p>
                 <button onClick={() => { setAccessControlDialog(true) }} className="fillBtn__blue ptr">
                     Add Condition
                 </button>
             </div>
 
-            <div className="uploadNew__content">
+            <div className="AccessControl__content">
+
+                <div className="conditionsContainer">
+                    All Conditions
+                    <hr />
+                    <div className="cardContainer">
+                        {
+                            allConditions.map((condition) => <div className="card">
+                                C1
+                            </div>)
+                        }
+
+                    </div>
+                </div>
+
+
+                <div className="aggregatorContainer">
+                    Create Aggregator
+                    <hr />
+
+                    <div class="input-box">
+
+                        <input type="text" placeholder="Aggregator" value={inputTerm} onChange={(e) => setInputTerm(e.target.value)} />
+
+                    </div>
+                    <button onClick={() => { setAccessControlDialog(true) }} className="fillBtn__blue ptr">
+                        Apply Access Control
+                    </button>
+
+                </div>
+
+
 
             </div>
 
@@ -38,8 +88,9 @@ function AccessControl() {
             >
                 <AccessControlDialog
                     setAccessControlDialog={setAccessControlDialog}
-                    accessConditions={accessConditions}
-                    setAccessConditions={setAccessConditions} />
+                    setCurrentCondition={setCurrentCondition}
+                    currentCondition={currentCondition}
+                />
             </Dialog>
         </div>
     )

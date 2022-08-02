@@ -6,6 +6,7 @@ import { availableNetworks } from "../config/availableNetworks";
 import { Web3AuthCore } from "@web3auth/core";
 import { WALLET_ADAPTERS } from "@web3auth/base";
 import { MetamaskAdapter } from "@web3auth/metamask-adapter";
+import History from "./GlobalNavigation/navigationHistory";
 
 let clientId = process.env.REACT_APP_WEB3AUTH_APP_ID;
 export var web3auth = undefined;
@@ -102,7 +103,8 @@ export const Web3AuthLoginWithWallet = async () => {
    );
     return web3authProvider;
   } catch (error) {
-    console.log("error", error);
+    console.log("error", error["code"]);
+    error["code"] === 5111 && History.push("/dashboard");
     return;
   }
 };

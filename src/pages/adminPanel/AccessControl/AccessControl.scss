@@ -6,9 +6,6 @@
   width: 100%;
   padding: 1.5rem;
   justify-content: space-between;
-
- 
-
   &__title {
     color: var(--background-black);
     font-weight: 600;
@@ -17,12 +14,71 @@
     justify-content: space-between;
     align-items: center;
   }
-
   &__content {
     flex: 1;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
+
+    .conditionsContainer{
+      width: 100%;
+      margin-top: 20px;
+      .cardContainer{
+        display: flex;
+        flex-wrap: wrap;
+        width: -webkit-fill-available;
+  
+        .card{
+          height: 50px;
+          width: 100px;
+          border: 1px solid lightgrey;
+          border-radius: 10px;
+          cursor: pointer;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .aggregatorContainer{
+      .input-box {
+        display: flex;
+        align-items: center;
+        background: #fefefe;
+        border: 0.5px solid #c4c4c4;
+        box-sizing: border-box;
+        border-radius: 10px;
+        margin: 0.5rem 0rem;
+        padding: 10px;
+        height: 60px;
+        width: 100%;
+        font-size: 1.3rem;
+      }
+
+      .input-box .prefix,
+      .input-box .suffix {
+        font-weight: 300;
+        font-size: inherit;
+        color: #999;
+      }
+
+      .input-box input {
+        flex-grow: 1;
+        font-size: inherit;
+        background: #fff;
+        border: none;
+        outline: none;
+        padding: 0.5rem;
+      }
+
+      .input-box:focus-within {
+        border-color: #777;
+      }
+    }
+   
   }
 
 

@@ -76,7 +76,7 @@ function UploadNew() {
                     {/* <ToggleButton
                       setIsEncrypted={setIsEncrypted}
                       isEncrypted={isEncrypted}
-                  /> */}
+                    /> */}
               </div>
               {isDisclaimer && (
                   <DisclaimerBar
