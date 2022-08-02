@@ -10,7 +10,7 @@ import moment from "moment";
 import Searchbar from "../../../components/searchBar/Searchbar";
 import Pagination from "../../../components/Pagination/Pagination";
 import { notify } from "../../../utils/services/notification";
-import { getAddress } from "../../../utils/services/auth";
+import { getAddress, refreshAccessToken } from "../../../utils/services/auth";
 import { getFileIcon } from "../../../utils/services/fileTypeIcons";
 import ReactLoading from "react-loading";
 import { baseUrl } from "../../../utils/config/urls";
@@ -32,6 +32,7 @@ function Myspace() {
 
     useEffect(() => {
         getData();
+        refreshAccessToken();
     }, []);
 
     const setTableItemsLength = () => {

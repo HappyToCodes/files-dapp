@@ -51,7 +51,7 @@ function LoginDialog({ setLoginDialog }) {
         });
         _auth.setAuthData(obj);
         console.log('web3auth Provider', web3authProvider);
-        login(obj.address, obj.signed_message, authToken?.['data']?.['accessToken'], provider);
+        login(obj.address, obj.signed_message, authToken?.['data']?.['accessToken'],authToken?.['data']?.['refreshToken']);
     }
 
 

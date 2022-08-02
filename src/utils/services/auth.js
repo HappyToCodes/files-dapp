@@ -1,7 +1,9 @@
+import axios from "axios";
+import { baseUrl } from "../config/urls";
 import History from "./GlobalNavigation/navigationHistory";
 import { web3auth } from "./web3auth";
 
-export function login(address, signedMessage, accessToken, provider) {
+export function login(address, signedMessage, accessToken, refreshToken) {
   let expirationDate = new Date();
   expirationDate = expirationDate.setDate(expirationDate.getDate() + 7);
   localStorage.setItem(
@@ -11,6 +13,7 @@ export function login(address, signedMessage, accessToken, provider) {
       expirationDate: expirationDate,
       signedMessage: signedMessage,
       accessToken: accessToken,
+      refreshToken: refreshToken,
     })
   );
   History.navigate("/dashboard");
@@ -55,6 +58,20 @@ export function getSignMessage() {
   return message;
 }
 
+export async function refreshAccessToken() {
+  let token = await axios.get(`${baseUrl}/api/auth/refresh_access_token`, {
+    headers: { Authorization: `Bearer ${getRefreshToken()}` },
+  });
+  console.log(token);
+  if (token["status"] === 200) {
+    let authData = JSON.parse(localStorage.getItem("authData"));
+    authData["accessToken"] = token["data"]["accessToken"];
+    localStorage.setItem("authData", JSON.stringify(authData));
+  } else {
+    logout();
+  }
+}
+
 export function getAccessToken() {
   let message = null;
   if (isLogin()) {
@@ -62,5 +79,10 @@ export function getAccessToken() {
   }
   return message;
 }
-
-
+export function getRefreshToken() {
+  let message = null;
+  if (isLogin()) {
+    message = JSON.parse(localStorage.getItem("authData"))["refreshToken"];
+  }
+  return message;
+}
