@@ -70,7 +70,7 @@ function AccessControl() {
 
                     <div className="input-box">
 
-                        <input type="text" placeholder="Aggregator" value={inputTerm} onChange={(e) => setInputTerm(e.target.value)} />
+                        {/* <input type="text" placeholder="Aggregator" value={inputTerm} onChange={(e) => setInputTerm(e.target.value)} /> */}
 
                     </div>
                     <button onClick={() => { setAccessControlDialog(true) }} className="fillBtn__blue ptr">
