@@ -16,7 +16,8 @@ import { notify } from "../../utils/services/notification";
 import History from "../../utils/services/GlobalNavigation/navigationHistory";
 import Skeleton from "react-loading-skeleton";
 import { TbLockAccess } from "react-icons/tb";
-import AccessControlDialog from "../AccessControlDialog/AccessControlDialog";
+import { getDealIDs } from "../../utils/services/filedeploy";
+
 
 function viewFile(data) {
     History.navigate(`viewFile/${data?.cid}`, { state: data });
@@ -40,7 +41,14 @@ function downloadFile(cid, filename) {
 
 function Infobar({ infoBarData, setInfoBarData }) {
     const [shareDialogData, setShareDialogData] = useState(null);
-    const [accessControlData, setAccessControlData] = useState(null);
+    const [dealID, setDealIds] = useState(null);
+
+    useEffect(() => {
+        (async ()=>{
+            setDealIds(await getDealIDs(infoBarData?.cid))
+        })()
+    },[infoBarData])
+    
     return (
         <ProSidebar
             className="infoBarContainer"
@@ -82,7 +90,7 @@ function Infobar({ infoBarData, setInfoBarData }) {
                         Storage Deals
                         <br />
                         <span className="content">
-                            {infoBarData?.provider || <Skeleton />}
+                            {dealID|| <Skeleton />}
                         </span>
                     </p>
                 </div>
@@ -104,11 +112,11 @@ function Infobar({ infoBarData, setInfoBarData }) {
                     <BiDownload
                         onClick={() => downloadFile(infoBarData?.cid, infoBarData?.cid)}
                     />
-                    {/* <TbLockAccess
+                    <TbLockAccess
                         onClick={() => {
                             History.navigate(`dashboard/accessControl/${infoBarData?.cid}`, { state: infoBarData });
                         }}
-                    /> */}
+                    />
                 </div>
             </SidebarContent>
             <SidebarFooter></SidebarFooter>

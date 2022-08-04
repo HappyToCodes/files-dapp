@@ -11,14 +11,14 @@ import {
 
 import { AiOutlinePlus, AiOutlineGateway } from 'react-icons/ai';
 import { MdFolderShared } from 'react-icons/md';
-import { BiLogOut } from 'react-icons/bi';
+import { BiLogOut,BiTransferAlt } from 'react-icons/bi';
 import { BsCollection } from 'react-icons/bs';
 import { AiOutlineApi } from 'react-icons/ai';
 import { HiOutlineDocument } from 'react-icons/hi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { authAC, balanceAC, otherDataAC, sidebarAC } from '../../store/action-creators';
+import { authAC, balanceAC, otherDataAC } from '../../store/action-creators';
 import { getBalance } from '../../utils/services/filedeploy';
 import { notify } from '../../utils/services/notification';
 import { bytesToString } from '../../utils/services/other';
@@ -83,6 +83,8 @@ function Sidebar({ setInfoBarData, infoBarData }) {
             <Menu iconShape="round">
                 <MenuItem icon={<MdFolderShared />} active={currentPage === '/dashboard' ? true : false}
                 >Dashboard <Link to='/dashboard' /></MenuItem>
+                <MenuItem icon={<BiTransferAlt />} active={currentPage === '/dashboard' ? true : false}
+                >Migration <Link to='/dashboard' /></MenuItem>
                 <MenuItem icon={<AiOutlineApi />} active={currentPage === '/dashboard/apikey' ? true : false}
                 >API Key <Link to='apikey' /></MenuItem>
                 <MenuItem icon={<BsCollection />} active={currentPage === '/dashboard/collection' ? true : false}

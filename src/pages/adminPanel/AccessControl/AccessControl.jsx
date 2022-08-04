@@ -1,6 +1,6 @@
 import { Dialog } from '@material-ui/core';
 import React, { useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import AccessControlDialog from '../../../containers/AccessControlDialog/AccessControlDialog';
 import './AccessControl.scss';
 
@@ -12,23 +12,26 @@ import './AccessControl.scss';
 
 function AccessControl() {
     const { cid } = useParams();
-    let allConditions = [];
+    // let allConditions = [];
     const [isAccessControlDialog, setAccessControlDialog] = useState(false);
     const [currentCondition, setCurrentCondition] = useState(null);
     const [inputTerm, setInputTerm] = useState('')
-
-    // const { state } = useLocation();
+    const [allConditions, setAllConditions] = useState([])
 
     useEffect(() => {
-        console.log(currentCondition);
         let condition = { ...currentCondition }
-        console.log(condition);
+        let conditionArr = [ ...allConditions ]       
         if (condition['id']) {
 
-        } else {
-            condition['id'] = allConditions.length;
-            allConditions.push(condition);
+        } 
+        if(condition['chain'] && !condition['id']){
+            condition['id'] = allConditions.length+1;
+            conditionArr.push(condition);
+            setAllConditions(conditionArr);
         }
+
+
+        console.log(allConditions);
 
 
 
@@ -53,7 +56,7 @@ function AccessControl() {
                     <div className="cardContainer">
                         {
                             allConditions.map((condition) => <div className="card">
-                                C1
+                                {`C${condition.id}`}
                             </div>)
                         }
 
@@ -65,9 +68,9 @@ function AccessControl() {
                     Create Aggregator
                     <hr />
 
-                    <div class="input-box">
+                    <div className="input-box">
 
-                        <input type="text" placeholder="Aggregator" value={inputTerm} onChange={(e) => setInputTerm(e.target.value)} />
+                        {/* <input type="text" placeholder="Aggregator" value={inputTerm} onChange={(e) => setInputTerm(e.target.value)} /> */}
 
                     </div>
                     <button onClick={() => { setAccessControlDialog(true) }} className="fillBtn__blue ptr">
