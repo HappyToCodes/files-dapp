@@ -33,6 +33,7 @@ function LoginDialog({ setLoginDialog }) {
     await proceedLogin(web3provider);
   };
 
+
   const proceedLogin = async (web3authProvider) => {
     const provider = new ethers.providers.Web3Provider(web3authProvider);
     const signer = provider.getSigner();
@@ -57,6 +58,7 @@ function LoginDialog({ setLoginDialog }) {
       authToken?.["data"]?.["refreshToken"]
     );
   };
+
 
   return (
     <div className="LoginDialog">
