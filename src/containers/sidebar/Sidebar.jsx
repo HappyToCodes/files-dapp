@@ -83,8 +83,8 @@ function Sidebar({ setInfoBarData, infoBarData }) {
             <Menu iconShape="round">
                 <MenuItem icon={<MdFolderShared />} active={currentPage === '/dashboard' ? true : false}
                 >Dashboard <Link to='/dashboard' /></MenuItem>
-                <MenuItem icon={<BiTransferAlt />} active={currentPage === '/dashboard' ? true : false}
-                >Migration <Link to='/dashboard' /></MenuItem>
+                <MenuItem icon={<BiTransferAlt />} active={currentPage === '/dashboard/migration' ? true : false}
+                >Migration <Link to='/dashboard/migration' /></MenuItem>
                 <MenuItem icon={<AiOutlineApi />} active={currentPage === '/dashboard/apikey' ? true : false}
                 >API Key <Link to='apikey' /></MenuItem>
                 <MenuItem icon={<BsCollection />} active={currentPage === '/dashboard/collection' ? true : false}

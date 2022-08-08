@@ -1,38 +1,38 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./Myspace.scss";
+import "./Migration.scss";
 import { MdOutlineContentCopy, MdOutlineVisibility } from "react-icons/md";
 import { useOutletContext } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fileAC } from "../../../store/action-creators/index";
-import { bindActionCreators } from "redux";
+
 import axios from "axios";
 import moment from "moment";
 import Searchbar from "../../../components/searchBar/Searchbar";
 import Pagination from "../../../components/Pagination/Pagination";
 import { notify } from "../../../utils/services/notification";
 import { getAddress } from "../../../utils/services/auth";
-import { getFileIcon } from "../../../utils/services/fileTypeIcons";
-import ReactLoading from "react-loading";
 import { baseUrl } from "../../../utils/config/urls";
 import { bytesToString, copyToClipboard } from "../../../utils/services/other";
 import Skeleton from "react-loading-skeleton";
+import { Dialog } from "@material-ui/core";
+import MigrationAddDialog from "../../../containers/MigrationAddDialog/MigrationAddDialog";
+import History from "../../../utils/services/GlobalNavigation/navigationHistory";
 
-function Myspace() {
-  const [infoBarData, setInfoBarData] = useOutletContext();
+function Migration() {
   const [currentItems, setCurrentItems] = useState([]);
   const [orignalItems, setOrignalItems] = useState([]);
   const [itemsPerPage, setitemsPerPage] = useState(7);
   const [responseReceived, setResponseReceived] = useState(false);
-  const [userBalance, setUserBalance] = useState(null);
+  const [isCreateMigrate, setCreateMigrate] = useState(false);
+
   const tableRef = useRef(null);
   const store = useSelector((store) => store);
-  const dispatch = useDispatch();
-  const _fileAC = bindActionCreators(fileAC, dispatch);
+
   const isMobile = store?.otherData?.isMobile || false;
 
   useEffect(() => {
     getData();
-  }, []);
+    setTableItemsLength();
+  }, [isCreateMigrate]);
 
   const setTableItemsLength = () => {
     let tableHeight = tableRef?.current?.clientHeight || 0;
@@ -41,50 +41,55 @@ function Myspace() {
   };
 
   const getData = async () => {
-    axios.get(`${baseUrl}/api/user/get_uploads?publicKey=${getAddress()}`).then(
-      (response) => {
-        if (response["status"] === 200) {
-          _fileAC.setFileData(response["data"]);
-          setCurrentItems(response["data"]);
-          setOrignalItems(response["data"]);
-          setResponseReceived(true);
-          setTableItemsLength();
-        }
-      },
-      (error) => {
-        setResponseReceived(true);
+    try {
+      let data = await axios.get(
+        `${baseUrl}/api/lighthouse/cid_order_status?publicKey=${getAddress().toLowerCase()}`
+      );
+      console.log(data?.["data"]);
+      if (data["status"] === 200) {
+        setOrignalItems(data?.["data"]);
+        setCurrentItems(data?.["data"]);
       }
-    );
-
-    setUserBalance(store["balance"]);
+      setResponseReceived(true);
+    } catch (error) {
+      notify(`Error:${error}`);
+    }
   };
 
   return (
     <>
-      <div className="mySpace">
-        <div className="mySpace__title">
-          <p>My Space</p>
+      <div className="Migration">
+        <div className="Migration__title">
+          <p>Migrations</p>
           <div className="searchBar">
             <Searchbar
               orignalItems={orignalItems}
               setCurrentItems={setCurrentItems}
-              placeholder={"Search Name / CID"}
-              primaryConditionKey={"cid"}
-              secondaryConditionKey={"fileName"}
+              placeholder={"Search Order ID"}
+              primaryConditionKey={"orderID"}
             />
+            <div
+              className="fillBtn__blue"
+              style={{ whiteSpace: "nowrap" }}
+              onClick={() => {
+                setCreateMigrate(true);
+              }}
+            >
+              Create Migrations
+            </div>
           </div>
         </div>
 
-        <div className="mySpace__tableContainer" ref={tableRef}>
+        <div className="Migration__tableContainer" ref={tableRef}>
           <table>
             <thead>
               <tr className="tableHead">
-                <th>Name</th>
+                <th>Order ID</th>
                 {!isMobile ? (
                   <>
-                    <th>CID</th>
-                    <th>Size</th>
-                    <th>Last Modified</th>
+                    <th>Number of CID's</th>
+                    <th>Status</th>
+                    <th>Date</th>
                   </>
                 ) : (
                   <></>
@@ -99,34 +104,27 @@ function Myspace() {
                     key={i}
                     className="ptr"
                     onClick={() => {
-                      setInfoBarData(item);
+                      History.navigate(`dashboard/migration/${item.orderID}`);
                     }}
                   >
                     <td>
-                      {getFileIcon(
-                        item?.fileName,
-                        item?.encryption === "true" ? true : false
-                      )}
-                      &nbsp;{item?.fileName}
+                      {item.orderID}{" "}
+                      <span
+                        className="icon"
+                        onClick={() => {
+                          copyToClipboard(item.orderID);
+                        }}
+                      >
+                        <MdOutlineContentCopy />
+                      </span>
                     </td>
 
                     {isMobile ? (
                       <></>
                     ) : (
                       <>
-                        <td>
-                          <span className="cid">{item.cid}</span>
-                          &nbsp;
-                          <span
-                            className="icon"
-                            onClick={() => {
-                              copyToClipboard(item.cid);
-                            }}
-                          >
-                            <MdOutlineContentCopy />
-                          </span>
-                        </td>
-                        <td>{bytesToString(item?.fileSizeInBytes)}</td>
+                        <td>{item?.totalCID}</td>
+                        <td>{item?.orderStatus}</td>
                         <td>
                           {moment(item?.createdAt).format("DD-MM-YYYY h:mm:ss")}
                         </td>
@@ -161,25 +159,24 @@ function Myspace() {
             </tbody>
           </table>
         </div>
-        <div className="mySpace__lowerContainer">
-          <div className="sizeBar">
-            {userBalance && (
-              <p>
-                Total Size :{" "}
-                {bytesToString(userBalance["dataUsed"]) || <Skeleton />} /{" "}
-                {bytesToString(userBalance["dataLimit"]) || <Skeleton />}
-              </p>
-            )}
-          </div>
+        <div className="Migration__lowerContainer">
           <Pagination
             orignalData={orignalItems}
             setCurrentData={setCurrentItems}
             itemsPerPage={itemsPerPage}
           />
         </div>
+        <Dialog
+          open={isCreateMigrate}
+          onClose={() => {
+            setCreateMigrate(false);
+          }}
+        >
+          <MigrationAddDialog setCreateMigrate={setCreateMigrate} />
+        </Dialog>
       </div>
     </>
   );
 }
 
-export default Myspace;
+export default Migration;
