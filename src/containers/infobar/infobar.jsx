@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./infobar.scss";
 import {
-    ProSidebar,
-    SidebarHeader,
-    SidebarContent,
-    SidebarFooter,
+  ProSidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
 } from "react-pro-sidebar";
 import { BiDownload, BiLink } from "react-icons/bi";
 import { BsShare } from "react-icons/bs";
@@ -18,122 +18,119 @@ import Skeleton from "react-loading-skeleton";
 import { TbLockAccess } from "react-icons/tb";
 import { getDealIDs } from "../../utils/services/filedeploy";
 
-
 function viewFile(data) {
-    History.navigate(`viewFile/${data?.cid}`, { state: data });
+  History.navigate(`viewFile/${data?.cid}`, { state: data });
 }
 const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(`https://ipfs.io/ipfs/${text}`);
-    notify("Copied To Clipboard", "success");
+  navigator.clipboard.writeText(`https://ipfs.io/ipfs/${text}`);
+  notify("Copied To Clipboard", "success");
 };
 function downloadFile(cid, filename) {
-    let url = `https://ipfs.io/ipfs/${cid}`;
-    fetch(url)
-        .then((response) => response.blob())
-        .then((blob) => {
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.click();
-        })
-        .catch(console.error);
+  let url = `https://ipfs.io/ipfs/${cid}`;
+  fetch(url)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    })
+    .catch(console.error);
 }
 
 function Infobar({ infoBarData, setInfoBarData }) {
-    const [shareDialogData, setShareDialogData] = useState(null);
-    const [dealID, setDealIds] = useState(null);
+  const [shareDialogData, setShareDialogData] = useState(null);
+  const [dealID, setDealIds] = useState(null);
 
-    useEffect(() => {
-        (async ()=>{
-            setDealIds(await getDealIDs(infoBarData?.cid))
-        })()
-    },[infoBarData])
-    
-    return (
-        <ProSidebar
-            className="infoBarContainer"
-            collapsed={infoBarData?.cid ? false : true}
-        >
-            <div className="bg-overlay"></div>
-            <SidebarHeader>
-                <p className="fileName">{infoBarData?.fileName}</p>
-                <MdClose
-                    className="ptr"
-                    onClick={() => {
-                        setInfoBarData(null);
-                    }}
-                />
-            </SidebarHeader>
-            <SidebarContent>
-                <div className="row">
-                    <p>Size</p>
-                    <p className="content">
-                        {(infoBarData?.fileSizeInBytes / 1024).toFixed(1) + " KB"}
-                    </p>
-                </div>
-                <div className="row">
-                    <p>Created At</p>
-                    <p className="content">
-                        {moment(infoBarData?.createdAt).format("DD-MM-YYYY")} <br />{" "}
-                        {moment(infoBarData?.createdAt).format("h:mm:ss")}
-                    </p>
-                </div>
-                <div className="row">
-                    <p>
-                        CID
-                        <br />
-                        <span className="content">{infoBarData?.cid}</span>
-                    </p>
-                </div>
-                <div className="row">
-                    <p>
-                        Storage Deals
-                        <br />
-                        <span className="content">
-                            {dealID|| <Skeleton />}
-                        </span>
-                    </p>
-                </div>
+  useEffect(() => {
+    (async () => {
+      setDealIds(await getDealIDs(infoBarData?.cid));
+    })();
+  }, [infoBarData]);
 
-                <hr />
+  return (
+    <ProSidebar
+      className="infoBarContainer"
+      collapsed={infoBarData?.cid ? false : true}
+    >
+      <div className="bg-overlay"></div>
+      <SidebarHeader>
+        <p className="fileName">{infoBarData?.fileName}</p>
+        <MdClose
+          className="ptr"
+          onClick={() => {
+            setInfoBarData(null);
+          }}
+        />
+      </SidebarHeader>
+      <SidebarContent>
+        <div className="row">
+          <p>Size</p>
+          <p className="content">
+            {(infoBarData?.fileSizeInBytes / 1024).toFixed(1) + " KB"}
+          </p>
+        </div>
+        <div className="row">
+          <p>Created At</p>
+          <p className="content">
+            {moment(infoBarData?.createdAt).format("DD-MM-YYYY")} <br />{" "}
+            {moment(infoBarData?.createdAt).format("h:mm:ss")}
+          </p>
+        </div>
+        <div className="row">
+          <p>
+            CID
+            <br />
+            <span className="content">{infoBarData?.cid}</span>
+          </p>
+        </div>
+        <div className="row">
+          <p>
+            Storage Deals
+            <br />
+            <span className="content">{dealID || <Skeleton />}</span>
+          </p>
+        </div>
 
-                <div className="iconsContainer">
-                    <MdOutlineVisibility onClick={() => viewFile(infoBarData)} />
-                    <BiLink
-                        onClick={() => {
-                            copyToClipboard(infoBarData?.cid);
-                        }}
-                    />
-                    <BsShare
-                        onClick={() => {
-                            setShareDialogData(infoBarData);
-                        }}
-                    />
-                    <BiDownload
-                        onClick={() => downloadFile(infoBarData?.cid, infoBarData?.cid)}
-                    />
-                    <TbLockAccess
+        <hr />
+
+        <div className="iconsContainer">
+          <MdOutlineVisibility onClick={() => viewFile(infoBarData)} />
+          <BiLink
+            onClick={() => {
+              copyToClipboard(infoBarData?.cid);
+            }}
+          />
+          <BsShare
+            onClick={() => {
+              setShareDialogData(infoBarData);
+            }}
+          />
+          <BiDownload
+            onClick={() => downloadFile(infoBarData?.cid, infoBarData?.cid)}
+          />
+          {/* <TbLockAccess
                         onClick={() => {
                             History.navigate(`dashboard/accessControl/${infoBarData?.cid}`, { state: infoBarData });
                         }}
-                    />
-                </div>
-            </SidebarContent>
-            <SidebarFooter></SidebarFooter>
+                    /> */}
+        </div>
+      </SidebarContent>
+      <SidebarFooter></SidebarFooter>
 
-            <Dialog
-                open={shareDialogData != null ? true : false}
-                onClose={() => {
-                    setShareDialogData(null);
-                }}
-            >
-                <FileShareDialog
-                    shareDialogData={shareDialogData}
-                    setShareDialogData={setShareDialogData}
-                />
-            </Dialog>
-        </ProSidebar>
-    );
+      <Dialog
+        open={shareDialogData != null ? true : false}
+        onClose={() => {
+          setShareDialogData(null);
+        }}
+      >
+        <FileShareDialog
+          shareDialogData={shareDialogData}
+          setShareDialogData={setShareDialogData}
+        />
+      </Dialog>
+    </ProSidebar>
+  );
 }
 
 export default Infobar;
