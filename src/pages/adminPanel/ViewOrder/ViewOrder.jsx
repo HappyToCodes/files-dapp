@@ -1,37 +1,34 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./Myspace.scss";
-import { MdOutlineContentCopy, MdOutlineVisibility } from "react-icons/md";
-import { useOutletContext } from "react-router-dom";
+import "./ViewOrder.scss";
+import { MdOutlineContentCopy } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
-import { fileAC } from "../../../store/action-creators/index";
-import { bindActionCreators } from "redux";
+
 import axios from "axios";
 import moment from "moment";
 import Searchbar from "../../../components/searchBar/Searchbar";
 import Pagination from "../../../components/Pagination/Pagination";
 import { notify } from "../../../utils/services/notification";
 import { getAddress } from "../../../utils/services/auth";
-import { getFileIcon } from "../../../utils/services/fileTypeIcons";
-import ReactLoading from "react-loading";
 import { baseUrl } from "../../../utils/config/urls";
 import { bytesToString, copyToClipboard } from "../../../utils/services/other";
 import Skeleton from "react-loading-skeleton";
+import { useParams } from "react-router-dom";
 
-function Myspace() {
-  const [infoBarData, setInfoBarData] = useOutletContext();
+function ViewOrder() {
   const [currentItems, setCurrentItems] = useState([]);
   const [orignalItems, setOrignalItems] = useState([]);
   const [itemsPerPage, setitemsPerPage] = useState(7);
   const [responseReceived, setResponseReceived] = useState(false);
-  const [userBalance, setUserBalance] = useState(null);
+  const { id } = useParams();
+
   const tableRef = useRef(null);
   const store = useSelector((store) => store);
-  const dispatch = useDispatch();
-  const _fileAC = bindActionCreators(fileAC, dispatch);
+
   const isMobile = store?.otherData?.isMobile || false;
 
   useEffect(() => {
     getData();
+    setTableItemsLength();
   }, []);
 
   const setTableItemsLength = () => {
@@ -41,50 +38,48 @@ function Myspace() {
   };
 
   const getData = async () => {
-    axios.get(`${baseUrl}/api/user/get_uploads?publicKey=${getAddress()}`).then(
-      (response) => {
-        if (response["status"] === 200) {
-          _fileAC.setFileData(response["data"]);
-          setCurrentItems(response["data"]);
-          setOrignalItems(response["data"]);
-          setResponseReceived(true);
-          setTableItemsLength();
-        }
-      },
-      (error) => {
-        setResponseReceived(true);
+    try {
+      let response = await axios.get(
+        `${baseUrl}/api/lighthouse/order_details?orderId=${id.toLowerCase()}`
+      );
+      if (response["status"] === 200) {
+        setOrignalItems(response?.["data"]);
+        setCurrentItems(response?.["data"]);
       }
-    );
-
-    setUserBalance(store["balance"]);
+      setResponseReceived(true);
+    } catch (error) {
+      notify(`Error:${error}`);
+    }
   };
+
+  const getOrderDetails = async (orderID) => {};
 
   return (
     <>
-      <div className="mySpace">
-        <div className="mySpace__title">
-          <p>My Space</p>
+      <div className="ViewOrder">
+        <div className="ViewOrder__title">
+          <p>{id}</p>
           <div className="searchBar">
             <Searchbar
               orignalItems={orignalItems}
               setCurrentItems={setCurrentItems}
-              placeholder={"Search Name / CID"}
+              placeholder={"Search CID"}
               primaryConditionKey={"cid"}
-              secondaryConditionKey={"fileName"}
             />
           </div>
         </div>
 
-        <div className="mySpace__tableContainer" ref={tableRef}>
+        <div className="ViewOrder__tableContainer" ref={tableRef}>
           <table>
             <thead>
               <tr className="tableHead">
-                <th>Name</th>
+                <th>CID</th>
                 {!isMobile ? (
                   <>
-                    <th>CID</th>
-                    <th>Size</th>
-                    <th>Last Modified</th>
+                    <th>Status</th>
+                    <th>File Name</th>
+                    <th>File Size</th>
+                    <th>Deal ID</th>
                   </>
                 ) : (
                   <></>
@@ -99,37 +94,35 @@ function Myspace() {
                     key={i}
                     className="ptr"
                     onClick={() => {
-                      setInfoBarData(item);
+                      getOrderDetails(item.orderID);
                     }}
                   >
                     <td>
-                      {getFileIcon(
-                        item?.fileName,
-                        item?.encryption === "true" ? true : false
-                      )}
-                      &nbsp;{item?.fileName}
+                      {item.cid}{" "}
+                      <span
+                        className="icon"
+                        onClick={() => {
+                          copyToClipboard(item.cid);
+                        }}
+                      >
+                        <MdOutlineContentCopy />
+                      </span>
                     </td>
 
                     {isMobile ? (
                       <></>
                     ) : (
                       <>
+                        <td>{item?.status}</td>
                         <td>
-                          <span className="cid">{item.cid}</span>
-                          &nbsp;
-                          <span
-                            className="icon"
-                            onClick={() => {
-                              copyToClipboard(item.cid);
-                            }}
-                          >
-                            <MdOutlineContentCopy />
-                          </span>
+                          {item?.fileName?.length > 0 ? item?.fileName : "-"}
                         </td>
-                        <td>{bytesToString(item?.fileSizeInBytes)}</td>
                         <td>
-                          {moment(item?.createdAt).format("DD-MM-YYYY h:mm:ss")}
+                          {item?.fileSizeInBytes.length > 0
+                            ? bytesToString(item?.fileSizeInBytes)
+                            : "-"}
                         </td>
+                        <td>{item?.deal.length > 0 ? item?.deal : "-"}</td>
                       </>
                     )}
                   </tr>
@@ -161,16 +154,7 @@ function Myspace() {
             </tbody>
           </table>
         </div>
-        <div className="mySpace__lowerContainer">
-          <div className="sizeBar">
-            {userBalance && (
-              <p>
-                Total Size :{" "}
-                {bytesToString(userBalance["dataUsed"]) || <Skeleton />} /{" "}
-                {bytesToString(userBalance["dataLimit"]) || <Skeleton />}
-              </p>
-            )}
-          </div>
+        <div className="ViewOrder__lowerContainer">
           <Pagination
             orignalData={orignalItems}
             setCurrentData={setCurrentItems}
@@ -182,4 +166,4 @@ function Myspace() {
   );
 }
 
-export default Myspace;
+export default ViewOrder;

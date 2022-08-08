@@ -10,72 +10,68 @@ import TokenCard from "../TokenCard/TokenCard";
 import { stableCoinContractAddress } from "../../utils/config/stableCoins";
 
 function ProfileDropdown() {
+  const userId = getAddress();
+  const stableCoins = stableCoinContractAddress;
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  return (
+    <Popover
+      isOpen={isPopoverOpen}
+      positions={["bottom"]}
+      onClickOutside={() => setIsPopoverOpen(false)}
+      content={
+        <div className="ProfileDropdown">
+          <div className="label">Public Address</div>
+          <div className="userName">
+            {userId
+              ? userId.substring(0, 4) +
+                "...." +
+                userId.substring(userId.length - 4)
+              : ""}
 
-    const userId = getAddress();
-    const stableCoins = stableCoinContractAddress;
-    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    return (
-        <Popover
-            isOpen={isPopoverOpen}
-            positions={["bottom", "left", "right"]}
-            onClickOutside={() => setIsPopoverOpen(false)}
-            content={
-                <div className="ProfileDropdown">
-                    <div className="label">Public Address</div>
-                    <div className="userName">
-                        {userId
-                            ? userId.substring(0, 4) +
-                            "...." +
-                            userId.substring(userId.length - 4)
-                            : ""}
-
-                        <div
-                            className="icon"
-                            onClick={() => {
-                                copyToClipboard(getAddress());
-                            }}
-                        >
-                            <MdOutlineContentCopy />
-                        </div>
-                    </div>
-
-                    <div className="label">Available Token</div>
-                    <div className="tokenContainer">
-
-                        {stableCoins && stableCoins.map((coin, key) =>
-                            <TokenCard {...coin} size={'small'} key={key} />
-                        )}
-
-                    </div>
-
-
-
-                </div>}
-        >
             <div
-                className="ProfileDropdownBtn"
-                onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+              className="icon"
+              onClick={() => {
+                copyToClipboard(getAddress());
+              }}
             >
-                <CgProfile
-                    onClick={() => {
-                        History.navigate("/dashboard/profile");
-                    }}
-                />
-                &nbsp;
-                <span>|</span>&nbsp;
-                <span className="userName">
-                    {userId
-                        ? userId.substring(0, 4) +
-                        "...." +
-                        userId.substring(userId.length - 4)
-                        : ""}
-                </span>
-                <span className="dropdown">
-                    <AiOutlineCaretDown />
-                </span>
+              <MdOutlineContentCopy />
             </div>
-        </Popover>
-    );
+          </div>
+
+          <div className="label">Available Token</div>
+          <div className="tokenContainer">
+            {stableCoins &&
+              stableCoins.map((coin, key) => (
+                <TokenCard {...coin} size={"small"} key={key} />
+              ))}
+          </div>
+        </div>
+      }
+    >
+      <div
+        className="ProfileDropdownBtn"
+        onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+      >
+        <CgProfile
+          onClick={() => {
+            History.navigate("/dashboard/profile");
+          }}
+        />
+        &nbsp;
+        <span>|</span>&nbsp;
+        <span className="userName">
+          {userId
+            ? userId.substring(0, 4) +
+              "...." +
+              userId.substring(userId.length - 4)
+            : ""}
+        </span>
+        <span className="dropdown">
+          <AiOutlineCaretDown />
+        </span>
+      </div>
+    </Popover>
+  );
 }
 
 export default ProfileDropdown;

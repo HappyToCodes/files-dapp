@@ -7,6 +7,7 @@ import { notify } from "./notification";
 import { getAccessToken, getAddress } from "./auth";
 import { baseUrl } from "../config/urls";
 import { currentWeb3AuthChain, web3auth } from "./web3auth";
+import Web3 from "web3";
 
 export const sign_message = async () => {
   const provider = new ethers.providers.Web3Provider(web3auth.provider);
@@ -196,4 +197,36 @@ export const getDealIDs = async (cid) => {
     }
     break;
   }
+};
+
+export const addressValidator = (value) => {
+  return Web3.utils.isAddress(value);
+};
+
+export const createAccessControl = async (cid, conditions, aggregator) => {
+  const publicKey = getAddress();
+  const signedMessage1 = await sign_auth_message();
+
+  // Get File Encryption Key
+  const fileEncryptionKey = await lighthouse.fetchEncryptionKey(
+    cid,
+    publicKey,
+    signedMessage1
+  );
+
+  console.log(fileEncryptionKey);
+
+  const signedMessage2 = await sign_auth_message();
+
+  const response = await lighthouse.accessCondition(
+    publicKey,
+    cid,
+    fileEncryptionKey,
+    signedMessage2,
+    conditions,
+    aggregator
+  );
+
+  // // Display response
+  console.log(response);
 };
