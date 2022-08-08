@@ -22,6 +22,8 @@ import { otherDataAC } from "./store/action-creators";
 import UnderMaintenance from "./pages/UnderMaintainance/UnderMaintenance";
 import FilePreview from "./pages/filePreview/FilePreview";
 import AccessControl from "./pages/adminPanel/AccessControl/AccessControl";
+import Migration from "./pages/adminPanel/Migration/Migration";
+import ViewOrder from "./pages/adminPanel/ViewOrder/ViewOrder";
 
 function App() {
   const dispatch = useDispatch();
@@ -49,6 +51,8 @@ function App() {
       >
         <Route index element={<Myspace />} />
         <Route path="gateway" element={<Gateway />} />
+        <Route path="migration" element={<Migration />} />
+        <Route path="migration/:id" element={<ViewOrder />} />
         <Route path="topup" element={<TopUp />} />
         <Route path="collection" element={<Collection />} />
         <Route path="apikey" element={<Apikey />} />

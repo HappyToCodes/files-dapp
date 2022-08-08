@@ -7,6 +7,7 @@ import { notify } from "./notification";
 import { getAccessToken, getAddress } from "./auth";
 import { baseUrl } from "../config/urls";
 import { currentWeb3AuthChain, web3auth } from "./web3auth";
+import Web3 from "web3";
 
 export const sign_message = async () => {
   const provider = new ethers.providers.Web3Provider(web3auth.provider);
@@ -179,4 +180,53 @@ export const getBalance = async () => {
     `${baseUrl}/api/user/user_data_usage?publicKey=${getAddress()}`
   );
   return response["data"];
+};
+
+export const getDealIDs = async (cid) => {
+  const status = await lighthouse.status(cid);
+  for (let i = 0; i < status.length; i++) {
+    if (status[i]["deals"].length > 0) {
+      for (let j = 0; j < status[i]["deals"].length; j++) {
+        let gap = 10 + (8 - status[i]["deals"][j]["miner"].length);
+        let dealIds =
+          Array(gap).fill("\xa0").join("") + status[i]["deals"][j]["dealId"];
+        return dealIds;
+      }
+    } else {
+      return "CID push to miners in progress.";
+    }
+    break;
+  }
+};
+
+export const addressValidator = (value) => {
+  return Web3.utils.isAddress(value);
+};
+
+export const createAccessControl = async (cid, conditions, aggregator) => {
+  const publicKey = getAddress();
+  const signedMessage1 = await sign_auth_message();
+
+  // Get File Encryption Key
+  const fileEncryptionKey = await lighthouse.fetchEncryptionKey(
+    cid,
+    publicKey,
+    signedMessage1
+  );
+
+  console.log(fileEncryptionKey);
+
+  const signedMessage2 = await sign_auth_message();
+
+  const response = await lighthouse.accessCondition(
+    publicKey,
+    cid,
+    fileEncryptionKey,
+    signedMessage2,
+    conditions,
+    aggregator
+  );
+
+  // // Display response
+  console.log(response);
 };

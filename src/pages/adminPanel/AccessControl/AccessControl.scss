@@ -18,7 +18,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
 
     .conditionsContainer{
       width: 100%;
@@ -39,44 +39,69 @@
           justify-content: center;
           align-items: center;
           font-weight: 600;
+          margin: 10px;
         }
       }
     }
 
+
+
     .aggregatorContainer{
-      .input-box {
+      &__title{
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        background: #fefefe;
-        border: 0.5px solid #c4c4c4;
-        box-sizing: border-box;
-        border-radius: 10px;
-        margin: 0.5rem 0rem;
-        padding: 10px;
-        height: 60px;
-        width: 100%;
-        font-size: 1.3rem;
+        
       }
-
-      .input-box .prefix,
-      .input-box .suffix {
-        font-weight: 300;
-        font-size: inherit;
-        color: #999;
-      }
-
-      .input-box input {
-        flex-grow: 1;
-        font-size: inherit;
-        background: #fff;
-        border: none;
-        outline: none;
-        padding: 0.5rem;
-      }
-
-      .input-box:focus-within {
-        border-color: #777;
-      }
+      margin-top: 2rem;
+      .fieldContainer {
+          margin: 1rem 0rem;
+          width: 100;
+          display: flex;
+          flex-direction: column;
+      
+          &__title {
+            font-size: 0.9rem;
+            font-weight: 600;
+          }
+      
+          &__information {
+            font-size: 0.7rem;
+            color: grey;
+            padding: 0.5rem 0rem;
+          }
+      
+          &__error {
+            font-size: 0.7rem;
+            color: #d51903;
+            padding: 0px 0px;
+          }
+      
+          textarea:focus,
+          input:focus {
+            outline: none;
+          }
+      
+          input[type="text"],
+          input[type="number"],
+          input[type="tel"],
+          select {
+            width: 100%;
+            background: #fefefe;
+            border: 0.5px solid #c4c4c4;
+            box-sizing: border-box;
+            border-radius: 10px;
+            margin: 0.5rem 0rem;
+            padding-left: 10px;
+            height: 3.5rem;
+            font-size: 1.5rem;
+          }
+      
+          .errorInput {
+            border-bottom: 0.5px solid #d51903 !important;
+          }
+      
+        }
     }
    
   }
