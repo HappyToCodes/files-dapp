@@ -1,11 +1,13 @@
 import { DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./AccessControlDialog.scss";
 import { useForm } from "react-hook-form";
 import {
   conditionChains,
   contractType,
+  comparators,
 } from "../../utils/config/accessControlConfig";
+import { addressValidator } from "../../utils/services/filedeploy";
 
 function AccessControlDialog({
   setCurrentCondition,
@@ -16,22 +18,39 @@ function AccessControlDialog({
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm();
   const form = useRef();
+  const [showTokenID, setShowTokenID] = useState(false);
 
   const onSubmit = (data) => {
-    console.log(data);
     data["returnValueTest"] = {
       comparator: data["comparator"],
       value: data["value"],
     };
+    let temp = data["parameters"];
+    data["parameters"] =
+      data["standardContractType"] === "ERC1155"
+        ? [temp, data["tokenID"]]
+        : [temp];
     delete data["comparator"];
     delete data["value"];
+    data["tokenID"] && delete data["tokenID"];
+    console.log("DATA SEND BY DIALOG", data);
     setCurrentCondition(data);
     setAccessControlDialog(false);
-    console.log(data);
   };
+
+  useEffect(() => {
+    reset({ method: "balanceOf", parameters: ":userBalance" });
+    const subscription = watch((value, { name, type }) => {
+      value["standardContractType"] === "ERC1155"
+        ? setShowTokenID(true)
+        : setShowTokenID(false);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <div className="AccessControlDialog">
@@ -78,6 +97,7 @@ function AccessControlDialog({
               <input
                 type="text"
                 placeholder="Method"
+                disabled={true}
                 className={errors.method ? "errorInput" : ""}
                 {...register("method", { required: true })}
               />
@@ -93,13 +113,23 @@ function AccessControlDialog({
                 type="text"
                 placeholder="Contract Address"
                 className={errors.contractAddress ? "errorInput" : ""}
-                {...register("contractAddress", { required: true })}
+                {...register("contractAddress", {
+                  required: true,
+                  validate: addressValidator,
+                })}
               />
-              {errors.contractAddress && (
-                <span className="fieldContainer__error">
-                  This field is required
-                </span>
-              )}
+              {errors.contractAddress &&
+                errors.contractAddress.type === "required" && (
+                  <span className="fieldContainer__error">
+                    This field is required
+                  </span>
+                )}
+              {errors.contractAddress &&
+                errors.contractAddress.type === "validate" && (
+                  <span className="fieldContainer__error">
+                    Enter Valid Contract Address
+                  </span>
+                )}
             </div>
 
             <div style={{ display: "flex" }}>
@@ -110,9 +140,11 @@ function AccessControlDialog({
                     className={errors.comparator ? "errorInput" : ""}
                     {...register("comparator", { required: true })}
                   >
-                    <option value=">=">{">="}</option>
-                    <option value="<=">{"<="}</option>
-                    <option value="==">{"=="}</option>
+                    {comparators.map((type, key) => (
+                      <option key={key} value={type}>
+                        {type}
+                      </option>
+                    ))}
                   </select>
                   {errors.comparator && (
                     <span className="fieldContainer__error">
@@ -128,8 +160,14 @@ function AccessControlDialog({
                     type="number"
                     placeholder="Value"
                     className={errors.value ? "errorInput" : ""}
-                    {...register("value", { required: true })}
+                    {...register("value", {
+                      required: true,
+                      pattern: {
+                        value: /^(0|[1-9]\d*)(\.\d+)?$/,
+                      },
+                    })}
                   />
+
                   {errors.value && (
                     <span className="fieldContainer__error">
                       This field is required
@@ -144,8 +182,9 @@ function AccessControlDialog({
               <input
                 type="text"
                 placeholder="Parameter"
+                disabled={true}
                 className={errors.parameters ? "errorInput" : ""}
-                {...register("parameters", { required: true })}
+                {...register("parameters")}
               />
               {errors.parameters && (
                 <span className="fieldContainer__error">
@@ -153,6 +192,27 @@ function AccessControlDialog({
                 </span>
               )}
             </div>
+            {showTokenID && (
+              <div className="fieldContainer">
+                <div className="fieldContainer__title">Token ID</div>
+                <input
+                  type="number"
+                  placeholder="Parameter"
+                  className={errors.tokenID ? "errorInput" : ""}
+                  {...register("tokenID", {
+                    required: true,
+                    pattern: {
+                      value: /^(0|[1-9]\d*)(\.\d+)?$/,
+                    },
+                  })}
+                />
+                {errors.tokenID && (
+                  <span className="fieldContainer__error">
+                    This field is required
+                  </span>
+                )}
+              </div>
+            )}
             <button className="btn ptr" type="submit">
               Create Access Condition
             </button>

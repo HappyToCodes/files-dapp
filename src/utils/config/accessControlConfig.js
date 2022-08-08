@@ -1,4 +1,4 @@
-export const contractType = ["Custom", "ERC20", "ERC115"];
+export const contractType = ["ERC721", "ERC20", "ERC1155"];
 export const conditionChains = [
   "Ethereum",
   "Rinkeby",
@@ -13,3 +13,5 @@ export const conditionChains = [
   "OptimismGoerli",
   "OptimismKovan",
 ];
+
+export const comparators = ["<", ">", "<=", ">=", "=="];
