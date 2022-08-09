@@ -52,7 +52,7 @@ function AccessControl() {
       aggregator = data["aggregator"];
     }
     console.log(allConditions, aggregator);
-    aggregator = JSON.stringify(aggregator);
+    // aggregator = JSON.stringify(aggregator);
 
     let response = await createAccessControl(cid, allConditions, aggregator);
 

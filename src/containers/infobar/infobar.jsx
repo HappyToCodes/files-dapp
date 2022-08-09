@@ -109,11 +109,13 @@ function Infobar({ infoBarData, setInfoBarData }) {
           <BiDownload
             onClick={() => downloadFile(infoBarData?.cid, infoBarData?.cid)}
           />
-          {/* <TbLockAccess
-                        onClick={() => {
-                            History.navigate(`dashboard/accessControl/${infoBarData?.cid}`, { state: infoBarData });
-                        }}
-                    /> */}
+          <TbLockAccess
+            onClick={() => {
+              History.navigate(`dashboard/accessControl/${infoBarData?.cid}`, {
+                state: infoBarData,
+              });
+            }}
+          />
         </div>
       </SidebarContent>
       <SidebarFooter></SidebarFooter>

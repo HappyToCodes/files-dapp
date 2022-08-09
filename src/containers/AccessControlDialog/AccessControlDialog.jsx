@@ -36,14 +36,14 @@ function AccessControlDialog({
         : [temp];
     delete data["comparator"];
     delete data["value"];
-    data["tokenID"] && delete data["tokenID"];
+    delete data["tokenID"];
     console.log("DATA SEND BY DIALOG", data);
     setCurrentCondition(data);
     setAccessControlDialog(false);
   };
 
   useEffect(() => {
-    reset({ method: "balanceOf", parameters: ":userBalance" });
+    reset({ method: "balanceOf", parameters: ":userAddress" });
     const subscription = watch((value, { name, type }) => {
       value["standardContractType"] === "ERC1155"
         ? setShowTokenID(true)
@@ -64,8 +64,10 @@ function AccessControlDialog({
                 className={errors.chain ? "errorInput" : ""}
                 {...register("chain", { required: true })}
               >
-                {conditionChains.map((chain) => (
-                  <option value={chain}>{chain}</option>
+                {conditionChains.map((chain, key) => (
+                  <option value={chain} key={key}>
+                    {chain}
+                  </option>
                 ))}
               </select>
               {errors.chain && (

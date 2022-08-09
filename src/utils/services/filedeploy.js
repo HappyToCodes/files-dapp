@@ -25,7 +25,7 @@ export const sign_message = async () => {
   };
 };
 const sign_auth_message = async () => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider = new ethers.providers.Web3Provider(web3auth.provider);
   const signer = provider.getSigner();
   const publicKey = await signer.getAddress();
   const messageRequested = await lighthouse.getAuthMessage(publicKey);
@@ -42,7 +42,6 @@ export const execute_transaction = async (
 ) => {
   const web3provider = await web3auth.connect();
   const provider = new ethers.providers.Web3Provider(web3provider);
-  // const provider = new ethers.providers.Web3Provider(window.ethereum);
   console.log(network);
   const contract_address = lighthouse.getContractAddress(network);
 
@@ -204,6 +203,8 @@ export const addressValidator = (value) => {
 };
 
 export const createAccessControl = async (cid, conditions, aggregator) => {
+  console.log("Conditions", conditions);
+  console.log("aggregator", aggregator);
   const publicKey = getAddress();
   const signedMessage1 = await sign_auth_message();
 
@@ -214,7 +215,7 @@ export const createAccessControl = async (cid, conditions, aggregator) => {
     signedMessage1
   );
 
-  console.log(fileEncryptionKey);
+  console.log("Encryption Key", fileEncryptionKey);
 
   const signedMessage2 = await sign_auth_message();
 
@@ -227,6 +228,5 @@ export const createAccessControl = async (cid, conditions, aggregator) => {
     aggregator
   );
 
-  // // Display response
-  console.log(response);
+  return response;
 };
