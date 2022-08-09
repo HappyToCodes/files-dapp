@@ -10,7 +10,7 @@ import moment from "moment";
 import Searchbar from "../../../components/searchBar/Searchbar";
 import Pagination from "../../../components/Pagination/Pagination";
 import { notify } from "../../../utils/services/notification";
-import { getAddress } from "../../../utils/services/auth";
+import { getAddress, refreshAccessToken } from "../../../utils/services/auth";
 import { getFileIcon } from "../../../utils/services/fileTypeIcons";
 import ReactLoading from "react-loading";
 import { baseUrl } from "../../../utils/config/urls";
@@ -30,9 +30,12 @@ function Myspace() {
   const _fileAC = bindActionCreators(fileAC, dispatch);
   const isMobile = store?.otherData?.isMobile || false;
 
-  useEffect(() => {
-    getData();
-  }, []);
+
+    useEffect(() => {
+        getData();
+        refreshAccessToken();
+    }, []);
+
 
   const setTableItemsLength = () => {
     let tableHeight = tableRef?.current?.clientHeight || 0;
