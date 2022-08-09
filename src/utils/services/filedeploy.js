@@ -26,8 +26,11 @@ export const sign_message = async () => {
 };
 const sign_auth_message = async () => {
   const provider = new ethers.providers.Web3Provider(web3auth.provider);
+  console.log(provider);
   const signer = provider.getSigner();
+  console.log("Signer", signer);
   const publicKey = await signer.getAddress();
+  console.log("Public Key", publicKey);
   const messageRequested = await lighthouse.getAuthMessage(publicKey);
   const signed_message = await signer.signMessage(messageRequested);
   return signed_message;
@@ -106,6 +109,7 @@ export const uploadEncryptedFile = async (
           getAccessToken()
         );
         setUploadProgress(0);
+        console.log("Deploy Response", deploy_response);
         notify(`File Upload Success:  ${deploy_response?.Hash}`, "success");
       } else {
         setUploadProgress(0);
@@ -122,8 +126,8 @@ export const uploadEncryptedFile = async (
 
 export const decryptEncryptedFile = async (cid) => {
   const signed_message = await sign_auth_message();
-  console.log(signed_message);
   const publicKey = getAddress();
+  console.log(signed_message, publicKey, cid);
   const key = await lighthouse.fetchEncryptionKey(
     cid,
     publicKey,
