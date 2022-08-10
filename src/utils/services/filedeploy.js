@@ -2,7 +2,7 @@ import lighthouse from "@lighthouse-web3/sdk";
 import { lighthouseAbi } from "../contract_abi/lighthouseAbi";
 import { ethers } from "ethers";
 import axios from "axios";
-import { getChainNetwork } from "./chainNetwork";
+
 import { notify } from "./notification";
 import { getAccessToken, getAddress } from "./auth";
 import { baseUrl } from "../config/urls";
@@ -103,10 +103,12 @@ export const uploadEncryptedFile = async (
       setUploadProgress(20);
       let balance = await getBalance();
       if (+balance?.dataUsed < +balance?.dataLimit) {
+        let signedEncryptionMessage = await sign_auth_message();
         const deploy_response = await lighthouse.uploadEncrypted(
           uploadedFile,
           getAddress(),
-          getAccessToken()
+          getAccessToken(),
+          signedEncryptionMessage
         );
         setUploadProgress(0);
         console.log("Deploy Response", deploy_response);
@@ -124,16 +126,17 @@ export const uploadEncryptedFile = async (
   }
 };
 
-export const decryptEncryptedFile = async (cid) => {
+export const decryptEncryptedFile = async (cid, isEncypted) => {
   const signed_message = await sign_auth_message();
   const publicKey = getAddress();
   console.log(signed_message, publicKey, cid);
   const key = await lighthouse.fetchEncryptionKey(
     cid,
     publicKey,
-    signed_message
+    signed_message,
+    isEncypted
   );
-  console.log(key);
+  console.log("KEY - decryptEncrypted", key);
   const decrypted = await lighthouse.decryptFile(cid, key);
   return decrypted;
 };

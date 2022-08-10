@@ -12,14 +12,21 @@ import { MdErrorOutline } from "react-icons/md";
 import axios from "axios";
 import { baseUrl } from "../../utils/config/urls";
 import { decryptEncryptedFile } from "../../utils/services/filedeploy";
+import { isLogin, login } from "../../utils/services/auth";
+import { notify } from "../../utils/services/notification";
+import { Dialog } from "@material-ui/core";
+import LoginDialog from "../../containers/LoginDialog/LoginDialog";
+import Skeleton from "react-loading-skeleton";
 
 function FilePreview() {
   const { id } = useParams();
-  const { state } = useLocation();
+
+  const [openLoginDialog, setLoginDialog] = useState(false);
   const [fileType, setFileType] = useState(undefined);
   const [fileInfo, setFileInfo] = useState(undefined);
   const [fileURL, setFileURL] = useState(undefined);
   const [isUnSupportedType, setIsUnSupportedType] = useState(false);
+  const [deniedAccess, setDeniedAccess] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -33,15 +40,31 @@ function FilePreview() {
   }, []);
 
   const getDecryptedFileURL = async (cid) => {
-    try {
-      // for Encryped File
-      let blob = await decryptEncryptedFile(cid, true);
+    if (isLogin()) {
+      let blob = null;
+      try {
+        // for Encryped File
+        blob = await decryptEncryptedFile(cid, true);
+      } catch (error) {
+        console.log("ERROR - Decrypt File", error);
+        try {
+          blob = await decryptEncryptedFile(cid, false);
+        } catch (error) {
+          console.log("ERROR - Access Control File", error);
+          setDeniedAccess(true);
+        }
+      }
       console.log(blob);
-      const url = URL.createObjectURL(blob);
-      console.log(url);
-      return url;
-    } catch (error) {
-      console.log(error);
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        console.log(url);
+        return url;
+      } else {
+        return null;
+      }
+    } else {
+      notify("Please Login to continue", "info");
+      setLoginDialog(true);
     }
   };
 
@@ -54,7 +77,7 @@ function FilePreview() {
 
   return (
     <div className="filePreviewContainer">
-      {fileURL && (
+      {fileURL ? (
         <>
           <div className="header">
             <div className="logoContainer">
@@ -103,7 +126,29 @@ function FilePreview() {
             )}
           </div>
         </>
+      ) : (
+        <div className="filePreviewContainer__notAccess">
+          <p>
+            {deniedAccess ? (
+              "You Dont Have Access to view / download the file"
+            ) : (
+              <Skeleton />
+            )}
+          </p>
+        </div>
       )}
+
+      <Dialog
+        open={openLoginDialog}
+        onClose={() => {
+          setLoginDialog(false);
+        }}
+      >
+        <LoginDialog
+          setLoginDialog={setLoginDialog}
+          loginRediect={`/viewFile/${id}`}
+        />
+      </Dialog>
     </div>
   );
 }

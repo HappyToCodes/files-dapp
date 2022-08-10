@@ -3,6 +3,16 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  &__notAccess{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    p{
+      font-size: 1.5rem;
+
+    }
+  }
   .header {
     height: 30px;
     width: -webkit-fill-available;

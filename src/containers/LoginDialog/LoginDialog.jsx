@@ -13,12 +13,13 @@ import { baseUrl } from "../../utils/config/urls";
 import { login } from "../../utils/services/auth";
 import { IoWallet } from "react-icons/io5";
 import "./LoginDialog.scss";
+import { sign_message } from "../../utils/services/filedeploy";
 
-function LoginDialog({ setLoginDialog }) {
+function LoginDialog({ setLoginDialog, loginRediect }) {
   const email = useRef("");
   const loginSocial = async (type) => {
     const web3provider = await web3AuthLogin(WALLET_ADAPTERS.OPENLOGIN, type);
-    await proceedLogin(web3provider);
+    await proceedLogin();
   };
   const handleLoginWithEmail = async () => {
     const web3provider = await web3AuthLogin(
@@ -26,27 +27,15 @@ function LoginDialog({ setLoginDialog }) {
       "email_passwordless",
       email.current.value
     );
-    await proceedLogin(web3provider);
+    await proceedLogin();
   };
   const handleWallet = async () => {
     const web3provider = await Web3AuthLoginWithWallet();
-    await proceedLogin(web3provider);
+    await proceedLogin();
   };
 
-
-  const proceedLogin = async (web3authProvider) => {
-    const provider = new ethers.providers.Web3Provider(web3authProvider);
-    const signer = provider.getSigner();
-    let address = await signer.getAddress();
-    const res = await axios.get(
-      `${baseUrl}/api/auth/get_message?publicKey=${address}`
-    );
-    const message = res.data;
-    const signed_message = await signer.signMessage(message);
-    const obj = {
-      signed_message: signed_message,
-      address: await signer.getAddress(),
-    };
+  const proceedLogin = async () => {
+    const obj = await sign_message();
     const authToken = await axios.post(`${baseUrl}/api/auth/verify_signer`, {
       publicKey: obj.address,
       signedMessage: obj.signed_message,
@@ -55,10 +44,10 @@ function LoginDialog({ setLoginDialog }) {
       obj.address,
       obj.signed_message,
       authToken?.["data"]?.["accessToken"],
-      authToken?.["data"]?.["refreshToken"]
+      authToken?.["data"]?.["refreshToken"],
+      loginRediect
     );
   };
-
 
   return (
     <div className="LoginDialog">
