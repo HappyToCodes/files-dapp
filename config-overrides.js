@@ -1,16 +1,6 @@
 const webpack = require("webpack");
 
 module.exports = function override(config, env) {
-  // console.log("override", env);
-  // let loaders = config.resolve;
-  // loaders.fallback = {
-  //   stream: require.resolve("stream-browserify"),
-  //   http: require.resolve("stream-http"),
-  //   https: require.resolve("https-browserify"),
-  //   os: require.resolve("os-browserify/browser"),
-  //   crypto: require.resolve("crypto-browserify"),
-  // };
-
   // return config;
   const fallback = config.resolve.fallback || {};
   Object.assign(fallback, {
@@ -21,6 +11,7 @@ module.exports = function override(config, env) {
     https: require.resolve("https-browserify"),
     os: require.resolve("os-browserify"),
     url: require.resolve("url"),
+    zlib: require.resolve("browserify-zlib"),
   });
   config.resolve.fallback = fallback;
   config.plugins = (config.plugins || []).concat([
