@@ -9,7 +9,7 @@ export const conditionChains = [
   "Fuji",
   "BSC",
   "BSCTest",
-  "optimism",
+  "Optimism",
   "OptimismGoerli",
   "OptimismKovan",
 ];

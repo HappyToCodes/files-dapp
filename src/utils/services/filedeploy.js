@@ -126,15 +126,14 @@ export const uploadEncryptedFile = async (
   }
 };
 
-export const decryptEncryptedFile = async (cid, isEncypted) => {
+export const decryptEncryptedFile = async (cid) => {
   const signed_message = await sign_auth_message();
   const publicKey = getAddress();
   console.log(signed_message, publicKey, cid);
   const key = await lighthouse.fetchEncryptionKey(
     cid,
     publicKey,
-    signed_message,
-    isEncypted
+    signed_message
   );
   console.log("KEY - decryptEncrypted", key);
   const decrypted = await lighthouse.decryptFile(cid, key);

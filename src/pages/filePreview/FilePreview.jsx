@@ -44,15 +44,10 @@ function FilePreview() {
       let blob = null;
       try {
         // for Encryped File
-        blob = await decryptEncryptedFile(cid, true);
+        blob = await decryptEncryptedFile(cid);
       } catch (error) {
         console.log("ERROR - Decrypt File", error);
-        try {
-          blob = await decryptEncryptedFile(cid, false);
-        } catch (error) {
-          console.log("ERROR - Access Control File", error);
-          setDeniedAccess(true);
-        }
+        setDeniedAccess(true);
       }
       console.log(blob);
       if (blob) {
