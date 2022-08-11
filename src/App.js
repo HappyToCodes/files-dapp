@@ -39,8 +39,8 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Landingpage />}></Route>
-      {/* <Route path="/" element={<UnderMaintenance />}></Route> */}
+      {/* <Route path="/" element={<Landingpage />}></Route> */}
+      <Route path="/" element={<UnderMaintenance />}></Route>
       <Route
         path="/dashboard"
         element={
