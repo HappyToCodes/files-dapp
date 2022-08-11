@@ -85,7 +85,7 @@ function UploadNew() {
           <DisclaimerBar
             title={"Disclaimer"}
             content={
-              "Lighthouse currently deploys the files on public IPFS, uploading private files is not advisable"
+              "Lighthouse currently deploys the files on public IPFS, To upload private files - turn on the encryption"
             }
             setIsDisclaimer={setIsDisclaimer}
           />
