@@ -2,7 +2,7 @@ import lighthouse from "@lighthouse-web3/sdk";
 import { lighthouseAbi } from "../contract_abi/lighthouseAbi";
 import { ethers } from "ethers";
 import axios from "axios";
-import { getChainNetwork } from "./chainNetwork";
+
 import { notify } from "./notification";
 import { getAccessToken, getAddress } from "./auth";
 import { baseUrl } from "../config/urls";
@@ -25,9 +25,12 @@ export const sign_message = async () => {
   };
 };
 const sign_auth_message = async () => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider = new ethers.providers.Web3Provider(web3auth.provider);
+  console.log(provider);
   const signer = provider.getSigner();
+  console.log("Signer", signer);
   const publicKey = await signer.getAddress();
+  console.log("Public Key", publicKey);
   const messageRequested = await lighthouse.getAuthMessage(publicKey);
   const signed_message = await signer.signMessage(messageRequested);
   return signed_message;
@@ -42,7 +45,6 @@ export const execute_transaction = async (
 ) => {
   const web3provider = await web3auth.connect();
   const provider = new ethers.providers.Web3Provider(web3provider);
-  // const provider = new ethers.providers.Web3Provider(window.ethereum);
   console.log(network);
   const contract_address = lighthouse.getContractAddress(network);
 
@@ -101,12 +103,15 @@ export const uploadEncryptedFile = async (
       setUploadProgress(20);
       let balance = await getBalance();
       if (+balance?.dataUsed < +balance?.dataLimit) {
+        let signedEncryptionMessage = await sign_auth_message();
         const deploy_response = await lighthouse.uploadEncrypted(
           uploadedFile,
           getAddress(),
-          getAccessToken()
+          getAccessToken(),
+          signedEncryptionMessage
         );
         setUploadProgress(0);
+        console.log("Deploy Response", deploy_response);
         notify(`File Upload Success:  ${deploy_response?.Hash}`, "success");
       } else {
         setUploadProgress(0);
@@ -123,14 +128,14 @@ export const uploadEncryptedFile = async (
 
 export const decryptEncryptedFile = async (cid) => {
   const signed_message = await sign_auth_message();
-  console.log(signed_message);
   const publicKey = getAddress();
+  console.log(signed_message, publicKey, cid);
   const key = await lighthouse.fetchEncryptionKey(
     cid,
     publicKey,
     signed_message
   );
-  console.log(key);
+  console.log("KEY - decryptEncrypted", key);
   const decrypted = await lighthouse.decryptFile(cid, key);
   return decrypted;
 };
@@ -204,6 +209,8 @@ export const addressValidator = (value) => {
 };
 
 export const createAccessControl = async (cid, conditions, aggregator) => {
+  console.log("Conditions", conditions);
+  console.log("aggregator", aggregator);
   const publicKey = getAddress();
   const signedMessage1 = await sign_auth_message();
 
@@ -214,7 +221,7 @@ export const createAccessControl = async (cid, conditions, aggregator) => {
     signedMessage1
   );
 
-  console.log(fileEncryptionKey);
+  console.log("Encryption Key", fileEncryptionKey);
 
   const signedMessage2 = await sign_auth_message();
 
@@ -227,6 +234,5 @@ export const createAccessControl = async (cid, conditions, aggregator) => {
     aggregator
   );
 
-  // // Display response
-  console.log(response);
+  return response;
 };

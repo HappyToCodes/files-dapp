@@ -4,11 +4,9 @@ import { MdOutlineContentCopy } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 
 import axios from "axios";
-import moment from "moment";
 import Searchbar from "../../../components/searchBar/Searchbar";
 import Pagination from "../../../components/Pagination/Pagination";
 import { notify } from "../../../utils/services/notification";
-import { getAddress } from "../../../utils/services/auth";
 import { baseUrl } from "../../../utils/config/urls";
 import { bytesToString, copyToClipboard } from "../../../utils/services/other";
 import Skeleton from "react-loading-skeleton";

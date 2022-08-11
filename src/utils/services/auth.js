@@ -3,7 +3,13 @@ import { baseUrl } from "../config/urls";
 import History from "./GlobalNavigation/navigationHistory";
 import { web3auth } from "./web3auth";
 
-export function login(address, signedMessage, accessToken, refreshToken) {
+export function login(
+  address,
+  signedMessage,
+  accessToken,
+  refreshToken,
+  redirect = "/dashboard"
+) {
   let expirationDate = new Date();
   expirationDate = expirationDate.setDate(expirationDate.getDate() + 7);
   localStorage.setItem(
@@ -16,7 +22,10 @@ export function login(address, signedMessage, accessToken, refreshToken) {
       refreshToken: refreshToken,
     })
   );
-  History.navigate("/dashboard");
+
+  window.location.pathname !== redirect
+    ? History.navigate(redirect)
+    : window.location.reload();
 }
 
 export function isLogin() {
@@ -24,13 +33,14 @@ export function isLogin() {
   if (
     authData?.["userAddress"] &&
     authData?.["expirationDate"] &&
-    authData?.["signedMessage"]
+    authData?.["signedMessage"] &&
+    authData?.["accessToken"]
   ) {
     let currentDate = new Date();
     let expirationDate = new Date(authData?.["expirationDate"]);
     return expirationDate.getTime() > currentDate.getTime() ? true : false;
   } else {
-    logout();
+    // logout();
     return false;
   }
 }

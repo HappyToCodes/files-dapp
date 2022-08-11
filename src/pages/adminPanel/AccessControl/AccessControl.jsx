@@ -5,11 +5,12 @@ import { useParams } from "react-router-dom";
 import ToggleButton from "../../../components/ToggleButton/ToggleButton";
 import AccessControlDialog from "../../../containers/AccessControlDialog/AccessControlDialog";
 import { createAccessControl } from "../../../utils/services/filedeploy";
+import History from "../../../utils/services/GlobalNavigation/navigationHistory";
+import { notify } from "../../../utils/services/notification";
 import "./AccessControl.scss";
 
 function AccessControl() {
   const { cid } = useParams();
-
   const [isAccessControlDialog, setAccessControlDialog] = useState(false);
   const [currentCondition, setCurrentCondition] = useState(null);
   const [isCustomAggregator, setCustomAggregator] = useState(false);
@@ -52,11 +53,14 @@ function AccessControl() {
       aggregator = data["aggregator"];
     }
     console.log(allConditions, aggregator);
-    aggregator = JSON.stringify(aggregator);
+    // aggregator = JSON.stringify(aggregator);
 
     let response = await createAccessControl(cid, allConditions, aggregator);
 
-    console.log(response);
+    if (response === "Shared") {
+      notify("Access Control Added !", "success");
+      History.navigate("/dashboard");
+    }
   };
 
   return (
