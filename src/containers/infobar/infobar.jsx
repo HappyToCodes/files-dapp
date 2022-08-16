@@ -116,8 +116,12 @@ function Infobar({ infoBarData, setInfoBarData }) {
             data-tip="Download File"
             onClick={() => downloadFile(infoBarData?.cid, infoBarData?.cid)}
           />
-          {infoBarData?.encryption && (
-            <TbLockAccess
+        </div>
+
+        {infoBarData?.encryption && (
+          <div className="accessContainer">
+            <div
+              className="fillBtn__blue"
               data-tip="Access Control"
               onClick={() => {
                 History.navigate(
@@ -127,9 +131,11 @@ function Infobar({ infoBarData, setInfoBarData }) {
                   }
                 );
               }}
-            />
-          )}
-        </div>
+            >
+              Apply Access Control
+            </div>
+          </div>
+        )}
       </SidebarContent>
       <SidebarFooter></SidebarFooter>
 
