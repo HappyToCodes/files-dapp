@@ -1,4 +1,4 @@
-// Top up amount that will be charged per GB of storage
+// Top up amount that will be charged per GB of storage in USD
 export const topupAmount = 5;
 
 // Value Packs in USDC
