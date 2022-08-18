@@ -1,7 +1,6 @@
 import { Dialog } from "@material-ui/core";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import Overlay from "../../../containers/Overlay/Overlay";
 import TweeterTopupDialog from "../../../containers/tweeterTopUpDialog/TweeterTopupDialog";
 import {
   topupAmount,
@@ -9,16 +8,15 @@ import {
   topupValuePacks,
 } from "../../../utils/config/topupConfig";
 import { baseUrl } from "../../../utils/config/urls";
-import {
-  getAccessToken,
-  getAddress,
-  getSignMessage,
-} from "../../../utils/services/auth";
+import { getAccessToken } from "../../../utils/services/auth";
 import { notify } from "../../../utils/services/notification";
+import { depositCoin } from "../../../utils/services/smartContract";
+
 import "./TopUp.scss";
 
 const addTopup = async (value) => {
   console.log(value);
+  await depositCoin("USD Tether", null, value);
 };
 
 const calculateStorage = (value, setTopupStorage) => {

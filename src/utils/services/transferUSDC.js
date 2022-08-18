@@ -44,24 +44,3 @@ async function getContractInfo() {
   );
   return contractObj[0];
 }
-
-export const getCoinBalance = async (coinAddress) => {
-  let currentChain = currentWeb3AuthChain;
-  let balance = 0;
-  if (currentChain === "ethereum") {
-    const ERC20ABI = erc20ABI;
-    const tokenContractAddress = "0x6b175474e89094c44da98b954eedeac495271d0f";
-    const provider = new ethers.providers.Web3Provider(web3auth.provider);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(
-      tokenContractAddress,
-      ERC20ABI,
-      signer
-    );
-    const address = await signer.getAddress();
-    balance = (await contract.balanceOf(address)).toString();
-  } else {
-    // changeWeb3AuthChain("ethereum");
-  }
-  return balance;
-};

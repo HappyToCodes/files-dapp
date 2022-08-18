@@ -6,3 +6,5 @@ export const topupValuePacks = [5, 10, 100];
 
 // Storage Packs in GB
 export const topupStoragePacks = [5, 10, 100];
+
+export const depositAddress = 0x3484b417c94eb2ebc6385d2b044ba3b97e64a73a;

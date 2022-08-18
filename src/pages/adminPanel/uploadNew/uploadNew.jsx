@@ -8,7 +8,6 @@ import UploadCID from "../../../components/uploadCID/UploadCID";
 
 import {
   sign_message,
-  execute_transaction,
   uploadFile,
   uploadFolder,
   uploadEncryptedFile,
@@ -167,7 +166,6 @@ function UploadNew() {
         <UploadCID
           setUploadProgress={setUploadProgress}
           sign_message={sign_message}
-          execute_transaction={execute_transaction}
           notify={notify}
           setCidDialog={setCidDialog}
         />
