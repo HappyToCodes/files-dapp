@@ -32,7 +32,7 @@
         background: var(--primary-blue);
         border: none;
         padding: 7px 15px;
-        &:disabled{
+        &:disabled {
           background: var(--content-grey);
           opacity: 0.7;
         }
@@ -79,38 +79,40 @@
       align-items: center;
       flex-direction: column;
       padding: 2rem 0rem;
-      .input-box {
-        display: flex;
-        align-items: center;
-        background: #fefefe;
-        border: 0.5px solid #c4c4c4;
-        box-sizing: border-box;
-        border-radius: 10px;
-        margin: 0.5rem 0rem;
-        padding: 10px;
-        height: 60px;
+      .inputContainer {
         width: 100%;
-        font-size: 1.3rem;
-      }
+        display: flex;
+        .input-box {
+          display: flex;
+          align-items: center;
+          background: #fefefe;
+          border: 0.5px solid #c4c4c4;
+          box-sizing: border-box;
+          border-radius: 10px;
+          margin: 0.5rem 0rem;
+          padding: 10px;
+          height: 60px;
+          width: 100%;
+          font-size: 1.3rem;
+          .prefix,
+          .suffix {
+            font-weight: 300;
+            font-size: inherit;
+            color: #999;
+          }
 
-      .input-box .prefix,
-      .input-box .suffix {
-        font-weight: 300;
-        font-size: inherit;
-        color: #999;
-      }
-
-      .input-box input {
-        flex-grow: 1;
-        font-size: inherit;
-        background: #fff;
-        border: none;
-        outline: none;
-        padding: 0.5rem;
-      }
-
-      .input-box:focus-within {
-        border-color: #777;
+          input {
+            flex-grow: 1;
+            font-size: inherit;
+            background: #fff;
+            border: none;
+            outline: none;
+            padding: 0.5rem;
+          }
+          &:focus-within {
+            border-color: #777;
+          }
+        }
       }
 
       .btn {

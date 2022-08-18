@@ -1,6 +1,7 @@
 import { Dialog } from "@material-ui/core";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import CoinSelect from "../../../components/coinSelect/CoinSelect";
 import TweeterTopupDialog from "../../../containers/tweeterTopUpDialog/TweeterTopupDialog";
 import {
   topupAmount,
@@ -14,9 +15,9 @@ import { depositCoin } from "../../../utils/services/smartContract";
 
 import "./TopUp.scss";
 
-const addTopup = async (value) => {
+const addTopup = async (value, chainName) => {
   console.log(value);
-  await depositCoin("USD Tether", null, value);
+  await depositCoin(chainName, null, value);
 };
 
 const calculateStorage = (value, setTopupStorage) => {
@@ -45,6 +46,7 @@ function TopUp() {
   const [topupStorage, setTopupStorage] = useState(0);
   const [tweeterTopup, setTweeterTopup] = useState(false);
   const [isTweeterUsed, setTweeterUsed] = useState(false);
+  const [currentCoin, setCurrentCoin] = useState("USD Tether");
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -114,23 +116,31 @@ function TopUp() {
         </div>
 
         <div className="topupMain__content">
-          <div class="input-box">
-            <span class="prefix">$</span>
-            <input
-              type="number"
-              placeholder="Enter Topup Amount"
-              ref={inputRef}
-              onChange={() => {
-                calculateStorage(inputRef.current.value, setTopupStorage);
-              }}
-            />
-            <span class="suffix">.00</span>
+          <div className="inputContainer">
+            <div class="input-box">
+              <span class="prefix">$</span>
+              <input
+                type="number"
+                placeholder="Enter Topup Amount"
+                ref={inputRef}
+                onChange={() => {
+                  calculateStorage(inputRef.current.value, setTopupStorage);
+                }}
+              />
+              <span class="suffix">.00</span>
+            </div>
+            {currentCoin && (
+              <CoinSelect
+                currentCoin={currentCoin}
+                setCurrentCoin={setCurrentCoin}
+              />
+            )}
           </div>
 
           <button
-            className="btn"
+            className="btn ptr"
             onClick={() => {
-              addTopup(inputRef.current.value);
+              addTopup(inputRef.current.value, currentCoin);
             }}
           >
             {topupStorage > 0 ? (

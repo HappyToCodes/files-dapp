@@ -1,0 +1,55 @@
+.react-tiny-popover-container {
+  top: 25px !important;
+  .coinSelect {
+    box-shadow: 1px 0px 12px 3px rgb(0 0 0 / 22%);
+    height: fit-content;
+    width: 200px;
+    background: white;
+    border-radius: 10px;
+    padding: 10px 20px;
+
+    &__chainItem {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      img {
+        width: auto;
+        height: 40px;
+      }
+      img:last-child {
+        width: 90%;
+      }
+      p {
+        font-size: 1.2rem;
+      }
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #00000069;
+      }
+    }
+  }
+}
+
+.coinSelect__popoverBtn {
+  background: #fefefe;
+  border: 0.5px solid #c4c4c4;
+  box-sizing: border-box;
+  border-radius: 10px;
+  margin: 0.5rem 0rem 0rem 1rem;
+  padding: 10px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  .logoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    img {
+      width: 35px;
+    }
+  }
+}
