@@ -44,6 +44,7 @@ export const getCoinBalance = async (coinName) => {
 };
 
 export const depositCoin = async (coinName, depositAddress, purchaseAmount) => {
+  console.log(coinName, purchaseAmount);
   try {
     const coinInfo = getCoinInfo(coinName);
     const ERC20ABI = erc20ABI;
@@ -59,7 +60,8 @@ export const depositCoin = async (coinName, depositAddress, purchaseAmount) => {
       depositManager["abi"],
       signer
     );
-    let refinedAmount = 10 * (await coinContract.decimals()) * purchaseAmount;
+    let refinedAmount = 10 ** (await coinContract.decimals()) * purchaseAmount;
+    refinedAmount = refinedAmount + "";
     console.log(refinedAmount);
     const approvalData = await coinContract.approve(
       depositContract.address,
@@ -70,10 +72,14 @@ export const depositCoin = async (coinName, depositAddress, purchaseAmount) => {
 
     const transactionData = await depositContract.addDeposit(
       coinContract.address,
-      refinedAmount
+      refinedAmount,
+      {
+        gasLimit: 500000,
+      }
     );
     console.log(transactionData);
   } catch (error) {
+    console.log(error);
     notify(error["message"] ? error["message"] : error, "error");
   }
 };

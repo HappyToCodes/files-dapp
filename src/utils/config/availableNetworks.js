@@ -173,7 +173,7 @@ export const availableNetworks = {
       },
       {
         name: "USD Coin",
-        contractAddress: "0xeb8f08a975Ab53E34D8a0330E0D34de942C95926",
+        contractAddress: "0x1717A0D5C8705EE89A8aD6E808268D6A826C97A4",
         abb: "USDC",
         decimals: 6,
       },
