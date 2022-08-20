@@ -1,7 +1,8 @@
-exports.billingContractData = {
+exports.billingManager = {
   _format: "hh-sol-artifact-1",
   contractName: "Billing",
   sourceName: "contracts/billing/Billing.sol",
+  contractAddress: "0xa02d3813b7334057dDbDa6Fe559b90280078bAD9",
   abi: [
     {
       anonymous: false,
