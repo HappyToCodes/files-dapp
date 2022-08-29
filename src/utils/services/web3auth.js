@@ -69,9 +69,9 @@ export const getWeb3AuthChainConfig = (chainName) => {
   }
 };
 
-export const changeWeb3AuthChain = (chainName) => {
+export const changeWeb3AuthChain = async (chainName) => {
   currentWeb3AuthChain = chainName;
-  initWeb3Auth();
+  await initWeb3Auth();
 };
 
 export const web3AuthLogin = async (adapter, loginProvider, login_hint) => {
@@ -97,10 +97,10 @@ export const Web3AuthLoginWithWallet = async () => {
       console.log("web3auth not initialized yet");
       return;
     }
-   let web3authProvider = await web3auth.connectTo(
-     WALLET_ADAPTERS.METAMASK,
-     {}
-   );
+    let web3authProvider = await web3auth.connectTo(
+      WALLET_ADAPTERS.METAMASK,
+      {}
+    );
     return web3authProvider;
   } catch (error) {
     console.log("error", error["code"]);

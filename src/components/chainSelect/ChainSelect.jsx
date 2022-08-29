@@ -16,8 +16,9 @@ function ChainSelect() {
   }, []);
 
   const handleNetworkSwitch = async (networkName) => {
-    changeWeb3AuthChain(networkName);
-    setCurrentChain(currentWeb3AuthChain);
+    await changeWeb3AuthChain(networkName);
+    await setCurrentChain(currentWeb3AuthChain);
+    setIsPopoverOpen(false);
   };
 
   return (
@@ -67,8 +68,15 @@ function ChainSelect() {
             onClick={() => handleNetworkSwitch("ethereumTestnet")}
           >
             <img src="/chain_icons/ethereum.png" alt="" />
-            <p>Etherium Testnet</p>
+            <p>Rinkbey Testnet</p>
           </div>
+          {/* <div
+            className="chainsList__chainItem"
+            onClick={() => handleNetworkSwitch("mumbaiPolygonTestnet")}
+          >
+            <img src="/chain_icons/polygon.png" alt="" />
+            <p>Mumbai Polygon</p>
+          </div> */}
         </div>
       }
     >
@@ -85,8 +93,9 @@ function ChainSelect() {
         {(currentChain === "binance" || currentChain === "binance-testnet") && (
           <>Binance</>
         )}
-        {(currentChain === "ethereum" ||
-          currentChain === "ethereumTestnet") && <>Ethereum</>}
+        {currentChain === "ethereum" && <>Ethereum</>}
+        {currentChain === "ethereumTestnet" && <>Rinkbey</>}
+        {currentChain === "mumbaiPolygonTestnet" && <>Mumbai</>}
         {(currentChain === "optimism" ||
           currentChain === "optimism-testnet") && <>Optimism</>}
         {currentChain === null && <>Change Network</>}

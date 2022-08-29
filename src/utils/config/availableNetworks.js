@@ -156,7 +156,7 @@ export const availableNetworks = {
   },
   ethereumTestnet: {
     chainId: `0x${Number(4).toString(16)}`,
-    chainName: "Ethereum Testnet",
+    chainName: "Rinkeby Testnet",
     nativeCurrency: {
       name: "Ethereum",
       symbol: "ETH",
@@ -180,6 +180,37 @@ export const availableNetworks = {
       {
         name: "DAI Coin",
         contractAddress: "0x95b58a6Bff3D14B7DB2f5cb5F0Ad413DC2940658",
+        abb: "DAI",
+        decimals: 18,
+      },
+    ],
+  },
+  mumbaiPolygonTestnet: {
+    chainId: `0x${Number(80001).toString(16)}`,
+    chainName: "Mumbai Testnet",
+    nativeCurrency: {
+      name: "MATIC",
+      symbol: "MATIC",
+      decimals: 18,
+    },
+    rpcUrls: ["	https://rpc-mumbai.matic.today"],
+    blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+    stableCoins: [
+      {
+        name: "USD Tether",
+        contractAddress: "0xA02f6adc7926efeBBd59Fd43A84f4E0c0c91e832",
+        abb: "USDT",
+        decimals: 6,
+      },
+      {
+        name: "USD Coin",
+        contractAddress: "0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747",
+        abb: "USDC",
+        decimals: 6,
+      },
+      {
+        name: "DAI Coin",
+        contractAddress: "0xd393b1E02dA9831Ff419e22eA105aAe4c47E1253",
         abb: "DAI",
         decimals: 18,
       },

@@ -2,6 +2,7 @@ import { Dialog } from "@material-ui/core";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import CoinSelect from "../../../components/coinSelect/CoinSelect";
+import DisclaimerBar from "../../../components/DisclaimerBar/DisclaimerBar";
 import TweeterTopupDialog from "../../../containers/tweeterTopUpDialog/TweeterTopupDialog";
 import {
   topupAmount,
@@ -46,6 +47,7 @@ function TopUp() {
   const [topupStorage, setTopupStorage] = useState(0);
   const [tweeterTopup, setTweeterTopup] = useState(false);
   const [isTweeterUsed, setTweeterUsed] = useState(false);
+  const [isDisclaimer, setIsDisclaimer] = useState(true);
   const [currentCoin, setCurrentCoin] = useState("USD Tether");
   const inputRef = useRef(null);
 
@@ -66,6 +68,15 @@ function TopUp() {
     <div className="topup">
       {/* <Overlay /> */}
       <div className="topupMain">
+        {isDisclaimer && (
+          <DisclaimerBar
+            title={"Disclaimer"}
+            content={
+              "This feature is in testing mode and is currently working on Mumbai Polygon and Rinkby Testnet"
+            }
+            setIsDisclaimer={setIsDisclaimer}
+          />
+        )}
         <div className="topupMain__title">
           <p>Topup Lighthouse Storage</p>
           <button
@@ -78,7 +89,6 @@ function TopUp() {
             Get 1 GB for free
           </button>
         </div>
-
         <div className="topupMain__description">
           <div className="container">
             <p>Add Quick Value Topups</p>
@@ -114,7 +124,6 @@ function TopUp() {
             </div>
           </div>
         </div>
-
         <div className="topupMain__content">
           <div className="inputContainer">
             <div class="input-box">
@@ -150,7 +159,6 @@ function TopUp() {
             )}
           </button>
         </div>
-
         <Dialog
           open={tweeterTopup}
           onClose={() => {

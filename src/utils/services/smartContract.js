@@ -38,6 +38,7 @@ export const getCoinBalance = async (coinName) => {
     );
     const address = await signer.getAddress();
     balance = (await coinContract.balanceOf(address)).toString();
+    balance = balance > 0 ? (balance / 10 ** coinInfo?.decimals).toFixed(1) : 0;
   } catch (error) {
     notify(error, "error");
   }
