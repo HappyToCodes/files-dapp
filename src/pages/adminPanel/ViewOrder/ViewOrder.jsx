@@ -111,7 +111,7 @@ function ViewOrder() {
                       <></>
                     ) : (
                       <>
-                        <td>{item?.status}</td>
+                        <td>{item?.cidStatus ? item?.cidStatus : "Queued"}</td>
                         <td>
                           {item?.fileName?.length > 0 ? item?.fileName : "-"}
                         </td>
@@ -120,7 +120,7 @@ function ViewOrder() {
                             ? bytesToString(item?.fileSizeInBytes)
                             : "-"}
                         </td>
-                        <td>{item?.deal.length > 0 ? item?.deal : "-"}</td>
+                        <td>{item?.deal?.length > 0 ? item?.deal : "-"}</td>
                       </>
                     )}
                   </tr>
