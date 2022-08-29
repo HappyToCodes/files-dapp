@@ -82,8 +82,12 @@ function Sidebar({ setInfoBarData, infoBarData }) {
         >
           Dashboard <Link to="/dashboard" />
         </MenuItem>
-        {/* <MenuItem icon={<BiTransferAlt />} active={currentPage === '/dashboard/migration' ? true : false}
-                >Migration <Link to='/dashboard/migration' /></MenuItem> */}
+        <MenuItem
+          icon={<BiTransferAlt />}
+          active={currentPage === "/dashboard/migration" ? true : false}
+        >
+          Migration <Link to="/dashboard/migration" />
+        </MenuItem>
         <MenuItem
           icon={<AiOutlineApi />}
           active={currentPage === "/dashboard/apikey" ? true : false}

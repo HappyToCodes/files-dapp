@@ -36,26 +36,6 @@ const sign_auth_message = async () => {
   return signed_message;
 };
 
-export const execute_transaction = async (
-  cid,
-  fileName,
-  fileSize,
-  cost,
-  network
-) => {
-  const web3provider = await web3auth.connect();
-  const provider = new ethers.providers.Web3Provider(web3provider);
-  console.log(network);
-  const contract_address = lighthouse.getContractAddress(network);
-
-  const signer = provider.getSigner();
-  const contract = new ethers.Contract(contract_address, lighthouseAbi, signer);
-  const txResponse = await contract.store(cid, "", fileName, fileSize, {
-    value: ethers.utils.parseEther(cost),
-  });
-  return txResponse;
-};
-
 export const uploadFile = async (
   uploadedFile,
   setUploadProgress,

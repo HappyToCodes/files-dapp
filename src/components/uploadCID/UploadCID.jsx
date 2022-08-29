@@ -11,12 +11,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Button from "@material-ui/core/Button";
 
-function UploadCID({
-  setUploadProgress,
-  sign_message,
-  execute_transaction,
-  setCidDialog,
-}) {
+function UploadCID({ setUploadProgress, sign_message, setCidDialog }) {
   const [fileName, setFileName] = useState("");
   const [CID, setCID] = useState("");
 

@@ -8,7 +8,6 @@ import UploadCID from "../../../components/uploadCID/UploadCID";
 
 import {
   sign_message,
-  execute_transaction,
   uploadFile,
   uploadFolder,
   uploadEncryptedFile,
@@ -85,7 +84,7 @@ function UploadNew() {
           <DisclaimerBar
             title={"Disclaimer"}
             content={
-              "Lighthouse currently deploys the files on public IPFS, uploading private files is not advisable"
+              "Lighthouse currently deploys the files on public IPFS, To upload private files - turn on the encryption"
             }
             setIsDisclaimer={setIsDisclaimer}
           />
@@ -167,7 +166,6 @@ function UploadNew() {
         <UploadCID
           setUploadProgress={setUploadProgress}
           sign_message={sign_message}
-          execute_transaction={execute_transaction}
           notify={notify}
           setCidDialog={setCidDialog}
         />

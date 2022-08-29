@@ -17,6 +17,7 @@ import History from "../../utils/services/GlobalNavigation/navigationHistory";
 import Skeleton from "react-loading-skeleton";
 import { TbLockAccess } from "react-icons/tb";
 import { getDealIDs } from "../../utils/services/filedeploy";
+import ReactTooltip from "react-tooltip";
 
 function viewFile(data) {
   History.navigate(`viewFile/${data?.cid}`, { state: data });
@@ -95,22 +96,33 @@ function Infobar({ infoBarData, setInfoBarData }) {
         <hr />
 
         <div className="iconsContainer">
-          <MdOutlineVisibility onClick={() => viewFile(infoBarData)} />
+          <MdOutlineVisibility
+            data-tip="View File"
+            onClick={() => viewFile(infoBarData)}
+          />
           <BiLink
+            data-tip="Copy Link"
             onClick={() => {
               copyToClipboard(infoBarData?.cid);
             }}
           />
           <BsShare
+            data-tip="Share File"
             onClick={() => {
               setShareDialogData(infoBarData);
             }}
           />
           <BiDownload
+            data-tip="Download File"
             onClick={() => downloadFile(infoBarData?.cid, infoBarData?.cid)}
           />
-          {infoBarData?.encryption && (
-            <TbLockAccess
+        </div>
+
+        {infoBarData?.encryption && (
+          <div className="accessContainer">
+            <div
+              className="fillBtn__blue"
+              data-tip="Access Control"
               onClick={() => {
                 History.navigate(
                   `dashboard/accessControl/${infoBarData?.cid}`,
@@ -119,9 +131,11 @@ function Infobar({ infoBarData, setInfoBarData }) {
                   }
                 );
               }}
-            />
-          )}
-        </div>
+            >
+              Apply Access Control
+            </div>
+          </div>
+        )}
       </SidebarContent>
       <SidebarFooter></SidebarFooter>
 
@@ -136,6 +150,7 @@ function Infobar({ infoBarData, setInfoBarData }) {
           setShareDialogData={setShareDialogData}
         />
       </Dialog>
+      <ReactTooltip />
     </ProSidebar>
   );
 }
