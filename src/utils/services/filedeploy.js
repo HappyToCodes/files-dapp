@@ -169,19 +169,16 @@ export const getBalance = async () => {
 
 export const getDealIDs = async (cid) => {
   const status = await lighthouse.status(cid);
+  let deals = [];
   for (let i = 0; i < status.length; i++) {
     if (status[i]["deals"].length > 0) {
-      for (let j = 0; j < status[i]["deals"].length; j++) {
-        let gap = 10 + (8 - status[i]["deals"][j]["miner"].length);
-        let dealIds =
-          Array(gap).fill("\xa0").join("") + status[i]["deals"][j]["dealId"];
-        return dealIds;
-      }
+      let tempDeal = status[i]["deals"];
+      tempDeal.forEach((item) => deals.push(item.ID));
     } else {
-      return "CID push to miners in progress.";
+      break;
     }
-    break;
   }
+  return deals.length > 0 ? deals : null;
 };
 
 export const addressValidator = (value) => {
