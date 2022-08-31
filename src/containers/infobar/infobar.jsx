@@ -45,7 +45,9 @@ function Infobar({ infoBarData, setInfoBarData }) {
 
   useEffect(() => {
     (async () => {
-      setDealIds(await getDealIDs(infoBarData?.cid));
+      let dealIds = await getDealIDs(infoBarData?.cid);
+      console.log(dealIds);
+      setDealIds(dealIds);
     })();
   }, [infoBarData]);
 
@@ -89,7 +91,23 @@ function Infobar({ infoBarData, setInfoBarData }) {
           <p>
             Storage Deals
             <br />
-            <span className="content">{dealID || <Skeleton />}</span>
+            <span className="content">
+              {dealID
+                ? dealID.map((deal, index) => (
+                    <span
+                      className="link"
+                      key={index}
+                      onClick={() => {
+                        window
+                          .open(`https://filfox.info/en/deal/${deal}`, "_blank")
+                          .focus();
+                      }}
+                    >
+                      {deal},&nbsp;
+                    </span>
+                  ))
+                : "CID push to miners in progress."}
+            </span>
           </p>
         </div>
 

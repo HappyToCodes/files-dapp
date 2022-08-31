@@ -58,7 +58,8 @@ function MigrationAddDialog({ setCreateMigrate }) {
   useEffect(() => {
     const handlePasteAnywhere = (event) => {
       let pasteContent = event.clipboardData.getData("text");
-      setCids(pasteContent.split(","));
+      let refinedPasteContent = pasteContent.replaceAll(/\s/g, "");
+      setCids(refinedPasteContent.split(","));
     };
     window.addEventListener("paste", handlePasteAnywhere);
     return () => {

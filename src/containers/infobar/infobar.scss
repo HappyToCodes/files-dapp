@@ -48,6 +48,13 @@
           color: white;
           text-align: right;
           line-height: 1.3rem;
+
+          .link {
+            cursor: pointer;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
         }
       }
 
