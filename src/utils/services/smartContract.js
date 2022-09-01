@@ -64,13 +64,13 @@ export const depositCoin = async (coinName, depositAddress, purchaseAmount) => {
     );
     let refinedAmount = 10 ** (await coinContract.decimals()) * purchaseAmount;
     refinedAmount = refinedAmount + "";
-    console.log(refinedAmount);
+    // console.log(refinedAmount);
     const approvalData = await coinContract.approve(
       depositContract.address,
       refinedAmount
     );
     approvalData.wait();
-    console.log(approvalData);
+    // console.log(approvalData);
 
     const transactionData = await depositContract.addDeposit(
       coinContract.address,
@@ -79,7 +79,7 @@ export const depositCoin = async (coinName, depositAddress, purchaseAmount) => {
         gasLimit: 500000,
       }
     );
-    console.log(transactionData);
+    // console.log(transactionData);
   } catch (error) {
     console.log(error);
     notify(error["message"] ? error["message"] : error, "error");

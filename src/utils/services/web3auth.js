@@ -7,6 +7,7 @@ import { Web3AuthCore } from "@web3auth/core";
 import { WALLET_ADAPTERS } from "@web3auth/base";
 import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 import History from "./GlobalNavigation/navigationHistory";
+import Web3 from "web3";
 
 let clientId = process.env.REACT_APP_WEB3AUTH_APP_ID;
 export var web3auth = undefined;
@@ -18,7 +19,7 @@ export const initWeb3Auth = async () => {
     web3auth = new Web3AuthCore({
       chainConfig: getWeb3AuthChainConfig(currentWeb3AuthChain),
     });
-    console.log(web3auth, "init web3auth");
+    // console.log(web3auth["walletAdapters"]["metamask"], "init web3auth");
 
     const openloginAdapter = new OpenloginAdapter({
       adapterSettings: {
@@ -70,8 +71,44 @@ export const getWeb3AuthChainConfig = (chainName) => {
 };
 
 export const changeWeb3AuthChain = async (chainName) => {
+  console.log(chainName, "change chain");
+  let currentAdapter = localStorage.getItem("Web3Auth-cachedAdapter");
+  console.log(currentAdapter, "change chain");
+  currentAdapter === "metamask" && (await changeAddNetworkMetamask(chainName));
   currentWeb3AuthChain = chainName;
   await initWeb3Auth();
+};
+
+export const changeAddNetworkMetamask = async (chainName) => {
+  let chainConfig = getWeb3AuthChainConfig(chainName);
+  console.log(chainConfig, "---");
+  if (window.ethereum.networkVersion !== chainConfig["chainId"]) {
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: Web3.utils.toHex(chainConfig["chainId"]) }],
+      });
+    } catch (err) {
+      // This error code indicates that the chain has not been added to MetaMask
+      if (err.code === 4902) {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [
+            {
+              chainName: chainConfig["displayName"],
+              chainId: Web3.utils.toHex(chainConfig["chainId"]),
+              nativeCurrency: {
+                name: chainConfig["tickerName"],
+                decimals: 18,
+                symbol: chainConfig["ticker"],
+              },
+              rpcUrls: chainConfig["rpcTarget"],
+            },
+          ],
+        });
+      }
+    }
+  }
 };
 
 export const web3AuthLogin = async (adapter, loginProvider, login_hint) => {

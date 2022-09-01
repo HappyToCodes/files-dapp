@@ -1,3 +1,5 @@
+import Web3 from "web3";
+
 export const availableNetworks = {
   polygon: {
     chainId: `0x${Number(137).toString(16)}`,
@@ -186,14 +188,14 @@ export const availableNetworks = {
     ],
   },
   mumbaiPolygonTestnet: {
-    chainId: `0x${Number(80001).toString(16)}`,
-    chainName: "Mumbai Testnet",
+    chainId: Web3.utils.toHex("80001"),
+    chainName: "Polygon Testnet Mumbai",
     nativeCurrency: {
-      name: "MATIC",
-      symbol: "MATIC",
+      name: "tMATIC",
+      symbol: "tMATIC",
       decimals: 18,
     },
-    rpcUrls: ["	https://rpc-mumbai.matic.today"],
+    rpcUrls: ["https://rpc-mumbai.maticvigil.com"],
     blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
     stableCoins: [
       {
