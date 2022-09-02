@@ -63,13 +63,13 @@ function ChainSelect() {
             <img src="/chain_icons/binance.png" alt="" />
             <p>Binance</p>
           </div>
-          <div
+          {/* <div
             className="chainsList__chainItem"
             onClick={() => handleNetworkSwitch("ethereumTestnet")}
           >
             <img src="/chain_icons/ethereum.png" alt="" />
             <p>Rinkbey Testnet</p>
-          </div>
+          </div> */}
           <div
             className="chainsList__chainItem"
             onClick={() => handleNetworkSwitch("mumbaiPolygonTestnet")}
