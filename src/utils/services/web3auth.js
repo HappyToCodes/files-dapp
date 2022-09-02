@@ -12,7 +12,7 @@ import Web3 from "web3";
 let clientId = process.env.REACT_APP_WEB3AUTH_APP_ID;
 export var web3auth = undefined;
 
-export var currentWeb3AuthChain = "ethereum";
+export var currentWeb3AuthChain = "mumbaiPolygonTestnet";
 
 export const initWeb3Auth = async () => {
   try {
@@ -81,7 +81,7 @@ export const changeWeb3AuthChain = async (chainName) => {
 
 export const changeAddNetworkMetamask = async (chainName) => {
   let chainConfig = getWeb3AuthChainConfig(chainName);
-  console.log(chainConfig, "---");
+
   if (window.ethereum.networkVersion !== chainConfig["chainId"]) {
     try {
       await window.ethereum.request({
