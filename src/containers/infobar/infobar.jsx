@@ -47,7 +47,7 @@ function Infobar({ infoBarData, setInfoBarData }) {
     (async () => {
       let dealIds = await getDealIDs(infoBarData?.cid);
       console.log(dealIds);
-      setDealIds(dealIds);
+      setDealIds(dealIds?.length > 6 ? dealIds.slice(0, 6) : dealIds);
     })();
   }, [infoBarData]);
 
@@ -89,6 +89,23 @@ function Infobar({ infoBarData, setInfoBarData }) {
         </div>
         <div className="row">
           <p>
+            TxHash
+            <br />
+            <span
+              className="content ptr"
+              onClick={() => {
+                window.open(
+                  `https://mumbai.polygonscan.com/tx/${infoBarData?.txHash}`,
+                  "_blank"
+                );
+              }}
+            >
+              {infoBarData?.txHash}
+            </span>
+          </p>
+        </div>
+        <div className="row">
+          <p>
             Storage Deals
             <br />
             <span className="content">
@@ -103,7 +120,8 @@ function Infobar({ infoBarData, setInfoBarData }) {
                           .focus();
                       }}
                     >
-                      {deal},&nbsp;
+                      {deal}
+                      {index + 1 === dealID.length ? "" : ","}&nbsp;
                     </span>
                   ))
                 : "CID push to miners in progress."}
