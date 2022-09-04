@@ -20,7 +20,11 @@ import { getDealIDs } from "../../utils/services/filedeploy";
 import ReactTooltip from "react-tooltip";
 
 function viewFile(data) {
-  History.navigate(`viewFile/${data?.cid}`, { state: data });
+  if(data["encryption"] === "false" || !data["encryption"]){
+    window.open("https://gateway.lighthouse.storage/ipfs/" + data["cid"], "_blank");
+  } else{
+    History.navigate(`viewFile/${data?.cid}`, { state: data });
+  }
 }
 const copyToClipboard = (text) => {
   navigator.clipboard.writeText(`https://ipfs.io/ipfs/${text}`);
