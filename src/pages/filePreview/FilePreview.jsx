@@ -34,7 +34,10 @@ function FilePreview() {
       info?.cid ? setFileInfo(info) : History.navigate("/dashboard");
       info?.encryption === "true"
         ? setFileURL(await getDecryptedFileURL(info?.cid))
-        : setFileURL(`https://gateway.lighthouse.storage/ipfs/${id}`);
+        : window.open(`https://gateway.lighthouse.storage/ipfs/${id}`) &&
+          History.navigate("/dashboard");
+      // setFileURL(`https://ipfs.io/ipfs/${id}`);
+      // setFileURL(`https://gateway.lighthouse.storage/ipfs/${id}`);
       setFileType(info?.fileName.split(".").pop());
     })();
   }, []);
@@ -116,7 +119,9 @@ function FilePreview() {
               <FileViewer
                 fileType={fileType}
                 filePath={fileURL}
-                onError={() => {}}
+                onError={(err) => {
+                  console.log(err, "FILE VIEWER ERROR");
+                }}
               />
             )}
           </div>
