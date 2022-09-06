@@ -20,9 +20,12 @@ import { getDealIDs } from "../../utils/services/filedeploy";
 import ReactTooltip from "react-tooltip";
 
 function viewFile(data) {
-  if(data["encryption"] === "false" || !data["encryption"]){
-    window.open("https://gateway.lighthouse.storage/ipfs/" + data["cid"], "_blank");
-  } else{
+  if (data["encryption"] === "false" || !data["encryption"]) {
+    window.open(
+      "https://gateway.lighthouse.storage/ipfs/" + data["cid"],
+      "_blank"
+    );
+  } else {
     History.navigate(`viewFile/${data?.cid}`, { state: data });
   }
 }
@@ -104,7 +107,13 @@ function Infobar({ infoBarData, setInfoBarData }) {
                 );
               }}
             >
-              {infoBarData?.txHash}
+              {infoBarData?.txHash?.length > 0
+                ? infoBarData?.txHash?.substring(0, 8) +
+                  "......" +
+                  infoBarData?.txHash?.substring(
+                    infoBarData?.txHash?.length - 8
+                  )
+                : "In Process"}
             </span>
           </p>
         </div>
