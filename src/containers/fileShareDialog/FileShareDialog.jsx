@@ -9,6 +9,8 @@ import Chips from "react-chips";
 import emailjs from "emailjs-com";
 import { notify } from "../../utils/services/notification";
 import ToggleButton from "../../components/ToggleButton/ToggleButton";
+import { ethers } from "ethers";
+import { shareFileToAddress } from "../../utils/services/filedeploy";
 
 const validateEmail = (email) => {
   return String(email)
@@ -17,7 +19,9 @@ const validateEmail = (email) => {
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 };
-
+const validateAddress = (address) => {
+  return ethers.utils.isAddress(address);
+};
 const sendEmail = (emailIds, cid, setMailAddress) => {
   let message = {
     to_emails: emailIds.join(","),
@@ -44,6 +48,10 @@ const sendEmail = (emailIds, cid, setMailAddress) => {
     );
 };
 
+const shareWithAddress = (cid, publicAddresses) => {
+  publicAddresses.length > 0 && shareFileToAddress(cid, publicAddresses[0]);
+};
+
 const chipTheme = {
   chip: {
     cursor: "default",
@@ -58,6 +66,7 @@ const chipTheme = {
 function FileShareDialog({ shareDialogData, setShareDialogData }) {
   // console.log(shareDialogData);
   const [mailAddress, setMailAddress] = useState([]);
+  const [publicAddresses, setPublicAddresses] = useState([]);
   const [isEmail, setIsEmail] = useState(false);
   const [isError, setError] = useState(false);
 
@@ -73,6 +82,18 @@ function FileShareDialog({ shareDialogData, setShareDialogData }) {
     });
     setMailAddress(validatedChips);
   }
+  function onChangePublicAddress(chips) {
+    setError(false);
+    let validatedChips = [];
+    chips.forEach((element) => {
+      if (validateAddress(element)) {
+        validatedChips.push(element);
+      } else {
+        setError(true);
+      }
+    });
+    setPublicAddresses(validatedChips);
+  }
   return (
     <>
       <DialogTitle className="title">
@@ -87,28 +108,49 @@ function FileShareDialog({ shareDialogData, setShareDialogData }) {
           />
         </span>
       </DialogTitle>
-      <DialogContent>
-        <p>Share your file with anyone</p>
+      {isEmail ? (
+        <DialogContent>
+          <p>Share your file with anyone using email</p>
 
-        {isEmail && isError && <small>Please enter a valid email</small>}
+          {isError && <small>Please enter a valid email</small>}
 
-        <DialogContentText>
-          <Chips
-            value={mailAddress}
-            onChange={onChange}
-            uniqueChips={true}
-            createChipKeys={[32, 188, 9, 13]}
-            chipTheme={chipTheme}
-          />
-        </DialogContentText>
-      </DialogContent>
+          <DialogContentText>
+            <Chips
+              value={mailAddress}
+              onChange={onChange}
+              uniqueChips={true}
+              createChipKeys={[32, 188, 9, 13]}
+              chipTheme={chipTheme}
+            />
+          </DialogContentText>
+        </DialogContent>
+      ) : (
+        <DialogContent>
+          <p>Share your file with anyone using public address</p>
+
+          {isError && <small>Please enter a valid public address</small>}
+
+          <DialogContentText>
+            <Chips
+              value={publicAddresses}
+              onChange={onChangePublicAddress}
+              uniqueChips={true}
+              createChipKeys={[32, 188, 9, 13]}
+              chipTheme={chipTheme}
+            />
+          </DialogContentText>
+        </DialogContent>
+      )}
       <DialogActions>
         <p className="files">
-          Sharing this file with {mailAddress.length} Users
+          Sharing this file with{" "}
+          {isEmail ? mailAddress.length : publicAddresses.length} Users
         </p>
         <Button
           onClick={() => {
-            sendEmail(mailAddress, shareDialogData.cid, setMailAddress);
+            isEmail
+              ? sendEmail(mailAddress, shareDialogData.cid, setMailAddress)
+              : shareWithAddress(shareDialogData.cid, publicAddresses);
           }}
         >
           Share
