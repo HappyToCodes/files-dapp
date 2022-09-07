@@ -104,7 +104,7 @@ function Myspace() {
                     <td>
                       {getFileIcon(
                         item?.fileName,
-                        item?.encryption === "true" ? true : false
+                        (item?.encryption === "true" || item?.encryption) ? true : false
                       )}
                       &nbsp;{item?.fileName}
                     </td>

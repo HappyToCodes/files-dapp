@@ -32,7 +32,7 @@ function FilePreview() {
     (async () => {
       let info = await getInfo();
       info?.cid ? setFileInfo(info) : History.navigate("/dashboard");
-      info?.encryption === "true"
+      (info?.encryption === "true" || info?.encryption)
         ? setFileURL(await getDecryptedFileURL(info?.cid))
         : window.open(`https://gateway.lighthouse.storage/ipfs/${id}`) &&
           History.navigate("/dashboard");

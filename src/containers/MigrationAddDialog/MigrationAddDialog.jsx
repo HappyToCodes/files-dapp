@@ -9,7 +9,9 @@ import Chips from "react-chips";
 import { notify } from "../../utils/services/notification";
 import axios from "axios";
 import { baseUrl } from "../../utils/config/urls";
-import { getAddress, getSignMessage } from "../../utils/services/auth";
+import chargeSample from "../../utils/contract_abi/billing";
+import Papa from "papaparse";
+
 import { sign_message } from "../../utils/services/filedeploy";
 
 const chipTheme = {
@@ -67,11 +69,59 @@ function MigrationAddDialog({ setCreateMigrate }) {
     };
   }, []);
 
+  const uploadFile = () => {
+    document.getElementById("file").click();
+  };
+  const downloadFile = () => {
+    let url =
+      "https://gateway.lighthouse.storage/ipfs/QmYxbsUXJdpAGzUa4Rns9tGMkfRF2MGZhxsjWTz6DWTLve";
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "sampleFile.csv";
+        link.click();
+      })
+      .catch(console.error);
+  };
+
+  const getEventFile = (event) => {
+    const files = event.target.files;
+    let unProcessedArray = [];
+    let processedArray = [];
+    if (files) {
+      Papa.parse(files[0], {
+        complete: function (results) {
+          unProcessedArray = results.data;
+
+          if (unProcessedArray.length > 0) {
+            unProcessedArray.forEach((item) => {
+              item?.[0]?.length > 0 && processedArray.push(item[0]);
+            });
+          }
+
+          setCids(processedArray);
+        },
+      });
+    }
+  };
   return (
     <>
       <DialogTitle>{"Migrate Files"}</DialogTitle>
       <DialogContent>
-        <p>Enter CID's you want to migrate</p>
+        <p>
+          Enter CID's you want to migrate or &nbsp;
+          <span
+            className="link"
+            onClick={() => {
+              uploadFile();
+            }}
+          >
+            upload the csv file
+          </span>{" "}
+          &nbsp; with the cids
+        </p>
         <DialogContentText>
           <Chips
             value={cids}
@@ -81,6 +131,23 @@ function MigrationAddDialog({ setCreateMigrate }) {
             chipTheme={chipTheme}
           />
         </DialogContentText>
+        {/* <a
+          // onClick={() => {
+          //   downloadFile();
+          // }}
+          href={chargeSample}
+          download="name.csv"
+          className="link"
+        >
+          Download Sample CSV
+        </a> */}
+        <input
+          type="file"
+          accept=".csv"
+          id="file"
+          onChange={(e) => getEventFile(e)}
+          hidden
+        />
       </DialogContent>
       <DialogActions>
         <Button

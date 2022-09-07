@@ -1,0 +1,12 @@
+#file {
+  display: hidden;
+}
+
+.link {
+  color: blueviolet;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

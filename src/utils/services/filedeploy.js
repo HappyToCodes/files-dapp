@@ -106,16 +106,19 @@ export const uploadEncryptedFile = async (
   }
 };
 
-export const decryptEncryptedFile = async (cid) => {
+export const getDecryptKey = async (cid) => {
   const signed_message = await sign_auth_message();
   const publicKey = getAddress();
-  console.log(signed_message, publicKey, cid);
   const key = await lighthouse.fetchEncryptionKey(
     cid,
     publicKey,
     signed_message
   );
-  console.log("KEY - decryptEncrypted", key);
+  return key;
+};
+
+export const decryptEncryptedFile = async (cid) => {
+  let key = await getDecryptKey(cid);
   const decrypted = await lighthouse.decryptFile(cid, key);
   return decrypted;
 };
@@ -212,4 +215,20 @@ export const createAccessControl = async (cid, conditions, aggregator) => {
   );
 
   return response;
+};
+
+export const shareFileToAddress = async (cid, publicAddress) => {
+  const key = await getDecryptKey(cid);
+  const signed_message = await sign_auth_message();
+  const res = await lighthouse.shareFile(
+    getAddress(),
+    publicAddress,
+    cid,
+    key,
+    signed_message
+  );
+
+  return res;
+
+  console.log(res); // String: "Shared"
 };
