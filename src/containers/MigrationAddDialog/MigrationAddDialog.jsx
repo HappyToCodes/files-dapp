@@ -131,7 +131,7 @@ function MigrationAddDialog({ setCreateMigrate }) {
             chipTheme={chipTheme}
           />
         </DialogContentText>
-        <a
+        {/* <a
           // onClick={() => {
           //   downloadFile();
           // }}
@@ -140,7 +140,7 @@ function MigrationAddDialog({ setCreateMigrate }) {
           className="link"
         >
           Download Sample CSV
-        </a>
+        </a> */}
         <input
           type="file"
           accept=".csv"
