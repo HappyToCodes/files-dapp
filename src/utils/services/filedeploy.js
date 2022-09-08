@@ -227,8 +227,7 @@ export const shareFileToAddress = async (cid, publicAddress) => {
     key,
     signed_message
   );
+  console.log(res); // String: "Shared"
 
   return res;
-
-  console.log(res); // String: "Shared"
 };
