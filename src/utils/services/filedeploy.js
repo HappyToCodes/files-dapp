@@ -171,10 +171,10 @@ export const getBalance = async () => {
 };
 
 export const getDealIDs = async (cid) => {
-  const status = await lighthouse.status(cid);
+  const status = cid ? await lighthouse.status(cid) : null;
   let deals = [];
-  for (let i = 0; i < status.length; i++) {
-    if (status[i]["deals"].length > 0) {
+  for (let i = 0; i < status?.length; i++) {
+    if (status[i]["deals"]?.length > 0) {
       let tempDeal = status[i]["deals"];
       tempDeal.forEach((item) => deals.push(item.ID));
     } else {

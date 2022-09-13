@@ -142,6 +142,16 @@ export const Web3AuthLoginWithWallet = async () => {
   } catch (error) {
     console.log("error", error["code"]);
     error["code"] === 5111 && History.push("/dashboard");
+    if (window.ethereum) {
+      // Do something
+      console.log("metamask installed");
+      window.ethereum.request({ method: "eth_requestAccounts" }).then((res) => {
+        // Return the address of the wallet
+        console.log(res);
+      });
+    } else {
+      alert("install metamask extension!!");
+    }
     return;
   }
 };
