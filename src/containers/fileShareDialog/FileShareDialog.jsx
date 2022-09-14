@@ -11,6 +11,8 @@ import { notify } from "../../utils/services/notification";
 import ToggleButton from "../../components/ToggleButton/ToggleButton";
 import { ethers } from "ethers";
 import { shareFileToAddress } from "../../utils/services/filedeploy";
+import { MdContentCopy } from "react-icons/md";
+import { copyToClipboard } from "../../utils/services/other";
 
 const validateEmail = (email) => {
   return String(email)
@@ -48,8 +50,16 @@ const sendEmail = (emailIds, cid, setMailAddress) => {
     );
 };
 
-const shareWithAddress = (cid, publicAddresses) => {
-  publicAddresses.length > 0 && shareFileToAddress(cid, publicAddresses[0]);
+const shareWithAddress = async (cid, publicAddresses, setPublicAddresses) => {
+  try {
+    if (publicAddresses.length > 0) {
+      let response = await shareFileToAddress(cid, publicAddresses[0]);
+      notify(response, "success");
+      setPublicAddresses([]);
+    }
+  } catch (err) {
+    notify(err, "error");
+  }
 };
 
 const chipTheme = {
@@ -64,7 +74,7 @@ const chipTheme = {
 };
 
 function FileShareDialog({ shareDialogData, setShareDialogData }) {
-  // console.log(shareDialogData);
+  console.log(shareDialogData);
   const [mailAddress, setMailAddress] = useState([]);
   const [publicAddresses, setPublicAddresses] = useState([]);
   const [isEmail, setIsEmail] = useState(false);
@@ -139,6 +149,23 @@ function FileShareDialog({ shareDialogData, setShareDialogData }) {
               chipTheme={chipTheme}
             />
           </DialogContentText>
+
+          <div className="linkShareContainer">
+            <div className="shareTitle">
+              <span>Sharable Link</span>
+              <MdContentCopy
+                className="ptr"
+                onClick={() => {
+                  copyToClipboard(
+                    `https://files.lighthouse.storage/viewFile/${shareDialogData["cid"]}`
+                  );
+                }}
+              />
+            </div>
+            <p>
+              {`https://files.lighthouse.storage/viewFile/${shareDialogData["cid"]}`}
+            </p>
+          </div>
         </DialogContent>
       )}
       <DialogActions>
@@ -150,7 +177,11 @@ function FileShareDialog({ shareDialogData, setShareDialogData }) {
           onClick={() => {
             isEmail
               ? sendEmail(mailAddress, shareDialogData.cid, setMailAddress)
-              : shareWithAddress(shareDialogData.cid, publicAddresses);
+              : shareWithAddress(
+                  shareDialogData.cid,
+                  publicAddresses,
+                  setPublicAddresses
+                );
           }}
         >
           Share

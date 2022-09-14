@@ -13,6 +13,7 @@ import chargeSample from "../../utils/contract_abi/billing";
 import Papa from "papaparse";
 
 import { sign_message } from "../../utils/services/filedeploy";
+import { downloadFileFromURL } from "../../utils/services/other";
 
 const chipTheme = {
   chip: {
@@ -72,19 +73,6 @@ function MigrationAddDialog({ setCreateMigrate }) {
   const uploadFile = () => {
     document.getElementById("file").click();
   };
-  const downloadFile = () => {
-    let url =
-      "https://gateway.lighthouse.storage/ipfs/QmYxbsUXJdpAGzUa4Rns9tGMkfRF2MGZhxsjWTz6DWTLve";
-    fetch(url)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "sampleFile.csv";
-        link.click();
-      })
-      .catch(console.error);
-  };
 
   const getEventFile = (event) => {
     const files = event.target.files;
@@ -131,16 +119,12 @@ function MigrationAddDialog({ setCreateMigrate }) {
             chipTheme={chipTheme}
           />
         </DialogContentText>
-        {/* <a
-          // onClick={() => {
-          //   downloadFile();
-          // }}
-          href={chargeSample}
-          download="name.csv"
-          className="link"
-        >
+
+        <a href={"/cids_CSV.csv"} download="SampleCSV.csv">
+          {" "}
           Download Sample CSV
-        </a> */}
+        </a>
+
         <input
           type="file"
           accept=".csv"

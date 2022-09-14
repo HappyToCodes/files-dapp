@@ -6,3 +6,15 @@
     align-items: center;
   }
 }
+
+.linkShareContainer {
+  .shareTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0px;
+  }
+  p {
+    word-wrap: break-word;
+  }
+}
