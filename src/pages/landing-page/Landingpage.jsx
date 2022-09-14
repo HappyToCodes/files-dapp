@@ -6,6 +6,11 @@ import { useLocation } from "react-router-dom";
 import { AiOutlineLogin } from "react-icons/ai";
 import { Dialog } from "@material-ui/core";
 import LoginDialog from "../../containers/LoginDialog/LoginDialog";
+import {
+  checkWeb3AuthConnection,
+  web3authLogout,
+} from "../../utils/services/web3auth";
+import { logout } from "../../utils/services/auth";
 
 function Landingpage() {
   const _location = useLocation();
@@ -23,6 +28,12 @@ function Landingpage() {
     isReloaded &&
       _location?.state?.from === "logout" &&
       window.location.reload();
+
+    console.log("isWeb3auth Connected", checkWeb3AuthConnection());
+    (async () => {
+      // await web3authLogout();
+      await logout();
+    })();
     return () => {};
   }, []);
 

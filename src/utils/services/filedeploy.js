@@ -171,7 +171,7 @@ export const getBalance = async () => {
 };
 
 export const getDealIDs = async (cid) => {
-  const status = cid ? await lighthouse.status(cid) : null;
+  const status = await lighthouse.status(cid);
   let deals = [];
   for (let i = 0; i < status?.length; i++) {
     if (status[i]["deals"]?.length > 0) {
