@@ -15,11 +15,11 @@ export var web3auth = undefined;
 export var currentWeb3AuthChain = "mumbaiPolygonTestnet";
 
 export const initWeb3Auth = async () => {
+  console.log("----");
   try {
     web3auth = new Web3AuthCore({
       chainConfig: getWeb3AuthChainConfig(currentWeb3AuthChain),
     });
-    // console.log(web3auth["walletAdapters"]["metamask"], "init web3auth");
 
     const openloginAdapter = new OpenloginAdapter({
       adapterSettings: {
@@ -30,17 +30,21 @@ export const initWeb3Auth = async () => {
     const metamaskAdapter = new MetamaskAdapter();
     web3auth.configureAdapter(openloginAdapter);
     web3auth.configureAdapter(metamaskAdapter);
-    await web3auth.init();
   } catch (error) {
-    console.error(error, "INSIDE WEB3AUTH");
+    console.error(error, "Error Initiating WEB3AUTH");
   }
+  await web3auth.init();
 };
 
 export const checkWeb3AuthConnection = () => {
-  web3auth.on(ADAPTER_EVENTS.CONNECTED, (data) => {
-    console.log("Yeah!, you are successfully logged in", data);
-    return true;
-  });
+  if (web3auth) {
+    web3auth.on(ADAPTER_EVENTS.CONNECTED, (data) => {
+      console.log("Yeah!, you are successfully logged in", data);
+      return true;
+    });
+  } else {
+    return false;
+  }
 };
 
 export const web3authLogout = async () => {
@@ -141,7 +145,7 @@ export const Web3AuthLoginWithWallet = async () => {
     return web3authProvider;
   } catch (error) {
     console.log("error", error["code"]);
-    error["code"] === 5111 && History.push("/dashboard");
+    // error["code"] === 5111 && History.push("/dashboard");
     if (window.ethereum) {
       // Do something
       console.log("metamask installed");
